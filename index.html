@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>OrbitTon Market</title>
+    <title>OrbitTon</title>
     
-    <!-- САМАЯ ВАЖНАЯ СТРОКА: ПОДКЛЮЧЕНИЕ СКРИПТА TELEGRAM -->
+    <!-- Подключаем скрипт Telegram -->
     <script src="https://telegram.org"></script>
     
     <style>
@@ -35,7 +35,13 @@
             border: 1px solid #333;
         }
 
-        h2 { margin: 0 0 10px 0; color: #0088cc; }
+        h2 { 
+            margin: 0 0 10px 0; 
+            background: linear-gradient(45deg, #0088cc, #00eeff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
         p { color: #888; font-size: 14px; margin-bottom: 25px; }
 
         input {
@@ -72,14 +78,11 @@
         <p>Создай профиль в маркете</p>
         
         <input type="text" id="username" placeholder="Ваш никнейм">
-        <button class="btn-reg" onclick="registerUser()">Создать аккаунт</button>
+        <button class="btn-reg" onclick="registerUser()">Зарегистрироваться</button>
     </div>
 
     <script>
-        // Инициализация Telegram WebApp
         const tg = window.Telegram.WebApp;
-        
-        // Расширяем на весь экран и сообщаем, что готовы
         tg.expand();
         tg.ready();
 
@@ -88,17 +91,11 @@
             const nickname = nameInput.value.trim();
 
             if (nickname.length < 3) {
-                tg.showAlert("Ник слишком короткий! (минимум 3 символа)");
+                tg.showAlert("Ник слишком короткий!");
                 return;
             }
 
-            // Формируем данные для отправки в Python
-            const data = {
-                nickname: nickname
-            };
-
-            // Отправляем данные в бота и закрываем окно
-            // ВАЖНО: Это сработает ТОЛЬКО внутри Telegram
+            const data = { nickname: nickname };
             tg.sendData(JSON.stringify(data));
             tg.close();
         }
