@@ -3,15 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Market Registration</title>
-    <!-- ПРАВИЛЬНЫЙ СКРИПТ ТЕЛЕГРАМА (НЕ МЕНЯТЬ!) -->
+    <title>OrbitTon Market</title>
+    
+    <!-- САМАЯ ВАЖНАЯ СТРОКА: ПОДКЛЮЧЕНИЕ СКРИПТА TELEGRAM -->
     <script src="https://telegram.org"></script>
+    
     <style>
-        /* Стиль в духе темной темы TON/Portal */
         body {
             background-color: #0f0f0f;
             color: white;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Segoe UI', Roboto, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -19,123 +20,88 @@
             height: 100vh;
             margin: 0;
             overflow: hidden;
-            -webkit-user-select: none; /* Запрещаем выделение текста */
+            user-select: none;
+            -webkit-user-select: none;
         }
 
         .card {
             background: #1a1a1a;
-            padding: 35px 25px;
-            border-radius: 28px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.7);
-            width: 85%;
-            max-width: 320px;
+            padding: 30px;
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            width: 80%;
+            max-width: 300px;
             text-align: center;
             border: 1px solid #333;
         }
 
-        h2 { 
-            margin: 0 0 10px 0; 
-            font-size: 26px;
-            background: linear-gradient(45deg, #0088cc, #00eeff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        p { color: #aaa; font-size: 14px; margin-bottom: 30px; line-height: 1.4; }
+        h2 { margin: 0 0 10px 0; color: #0088cc; }
+        p { color: #888; font-size: 14px; margin-bottom: 25px; }
 
         input {
             width: 100%;
-            padding: 14px;
+            padding: 12px;
             margin-bottom: 20px;
-            border-radius: 14px;
+            border-radius: 12px;
             border: 1px solid #444;
             background: #222;
             color: white;
             box-sizing: border-box;
             outline: none;
             font-size: 16px;
-            transition: border-color 0.3s;
-        }
-
-        input:focus {
-            border-color: #0088cc;
         }
 
         .btn-reg {
             background: linear-gradient(45deg, #0088cc, #00aaff);
             color: white;
             border: none;
-            padding: 16px;
-            border-radius: 16px;
+            padding: 15px;
+            border-radius: 15px;
             width: 100%;
             font-weight: bold;
-            font-size: 16px;
             cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 4px 15px rgba(0, 136, 204, 0.3);
         }
 
-        .btn-reg:active { 
-            transform: scale(0.97); 
-            opacity: 0.9;
-        }
-
-        /* Анимация появления */
-        .card {
-            animation: fadeIn 0.5s ease-out;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .btn-reg:active { transform: scale(0.98); }
     </style>
 </head>
 <body>
 
     <div class="card">
-        <h2>Market</h2>
-        <p>Добро пожаловать!<br>Придумай имя для своего профиля.</p>
+        <h2>OrbitTon</h2>
+        <p>Создай профиль в маркете</p>
         
-        <input type="text" id="username" placeholder="Ваш никнейм" autofocus>
-        <button class="btn-reg" onclick="sendData()">Создать аккаунт</button>
+        <input type="text" id="username" placeholder="Ваш никнейм">
+        <button class="btn-reg" onclick="registerUser()">Создать аккаунт</button>
     </div>
 
     <script>
-        // Инициализируем WebApp
+        // Инициализация Telegram WebApp
         const tg = window.Telegram.WebApp;
+        
+        // Расширяем на весь экран и сообщаем, что готовы
+        tg.expand();
+        tg.ready();
 
-        // Настройки внешнего вида Mini App
-        tg.expand(); // Разворачиваем на весь экран
-        tg.ready();  // Сообщаем ТГ, что приложение готово
-
-        function sendData() {
-            const input = document.getElementById("username");
-            const nickname = input.value.trim();
+        function registerUser() {
+            const nameInput = document.getElementById("username");
+            const nickname = nameInput.value.trim();
 
             if (nickname.length < 3) {
-                tg.showAlert("Никнейм слишком короткий! Минимум 3 символа.");
+                tg.showAlert("Ник слишком короткий! (минимум 3 символа)");
                 return;
             }
 
-            // Данные, которые улетят в Python
-            const userData = {
+            // Формируем данные для отправки в Python
+            const data = {
                 nickname: nickname
             };
 
-            try {
-                // Отправляем данные (работает ТОЛЬКО внутри Telegram)
-                tg.sendData(JSON.stringify(userData));
-                
-                // Закрываем окно
-                tg.close();
-            } catch (e) {
-                console.error("Ошибка при отправке данных:", e);
-                alert("Ошибка! Открывай это приложение только через бота Telegram.");
-            }
+            // Отправляем данные в бота и закрываем окно
+            // ВАЖНО: Это сработает ТОЛЬКО внутри Telegram
+            tg.sendData(JSON.stringify(data));
+            tg.close();
         }
-
-        // Кнопка закрытия в верхнем углу (стандарт ТГ)
-        tg.MainButton.hide(); 
     </script>
 </body>
 </html>
