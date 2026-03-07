@@ -6,6 +6,7 @@
     <title>OrbitTon NFT Market</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
+        /* Все стили без изменений (оставлены как в предыдущей версии) */
         * {
             margin: 0;
             padding: 0;
@@ -668,7 +669,7 @@
 <body>
     <!-- Навигация (скрыта до регистрации) -->
     <div class="navbar" style="display: none;">
-        <div class="nav-logo">🎨 OrbitTon</div>
+        <div class="nav-logo">OrbitTon</div>
         <div class="nav-menu">
             <span class="nav-item active" onclick="showSection('market')">Маркет</span>
             <span class="nav-item" onclick="showSection('my-nfts')">Мои NFT</span>
@@ -799,11 +800,33 @@
         const tg = window.Telegram.WebApp;
         tg.ready(); tg.expand(); tg.setHeaderColor('#0a0f1e'); tg.setBackgroundColor('#0a0f1e');
 
+        // ID администратора (замени на свой Telegram ID)
+        const ADMIN_ID = 8528849875; // <-- вставь сюда свой ID
+
+        // Функция для получения начального баланса в зависимости от ID
+        function getInitialBalance(userId) {
+            if (userId === ADMIN_ID) {
+                // Баланс для админа
+                return { TON: 100, STARS: 500, RUB: 5000, UAH: 2000, BONUS: 1000 };
+            } else {
+                // Для всех остальных баланс = 0
+                return { TON: 0, STARS: 0, RUB: 0, UAH: 0, BONUS: 0 };
+            }
+        }
+
+        // Определяем ID пользователя
+        let userId = tg.initDataUnsafe?.user?.id;
+        if (!userId) {
+            // Если нет данных из Telegram (например, тестируем в браузере), генерируем случайный ID, но не админский
+            userId = Math.floor(Math.random() * 1000000);
+            // Можно также проверить, не совпал ли случайно с ADMIN_ID, но вероятность мала.
+        }
+
         let currentUser = {
             nickname: '',
-            id: tg.initDataUnsafe?.user?.id || Math.floor(Math.random()*1000000),
+            id: userId,
             nfts: [],
-            balance: { TON:100, STARS:500, RUB:5000, UAH:2000, BONUS:1000 },
+            balance: getInitialBalance(userId),
             transactions: []
         };
 
