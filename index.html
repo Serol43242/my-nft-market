@@ -6,6 +6,7 @@
     <title>OrbitTon NFT Market</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
+        /* Все стили без изменений — оставлены из предыдущего ответа */
         * {
             margin: 0;
             padding: 0;
@@ -17,13 +18,12 @@
             color: #fff;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             min-height: 100vh;
-            user-select: none; /* запрет выделения текста */
+            user-select: none;
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
         }
 
-        /* Разрешаем выделение в полях ввода */
         input {
             user-select: text;
             -webkit-user-select: text;
@@ -31,7 +31,6 @@
             -ms-user-select: text;
         }
 
-        /* Навигация */
         .navbar {
             background: rgba(20, 25, 40, 0.95);
             backdrop-filter: blur(10px);
@@ -88,7 +87,6 @@
             padding: 20px;
         }
 
-        /* Сетка NFT */
         .nft-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -190,7 +188,6 @@
             box-shadow: 0 5px 15px rgba(0, 136, 204, 0.4);
         }
 
-        /* Модалки */
         .modal {
             display: none;
             position: fixed;
@@ -300,7 +297,6 @@
             background: rgba(0, 136, 204, 0.3);
         }
 
-        /* Профиль */
         .profile-header {
             background: rgba(30, 35, 50, 0.9);
             border-radius: 24px;
@@ -438,7 +434,6 @@
             background: #0088cc;
         }
 
-        /* Регистрационная карточка */
         #registerContainer {
             min-height: 100vh;
             display: flex;
@@ -678,7 +673,6 @@
     </style>
 </head>
 <body>
-    <!-- Навигация (скрыта до регистрации) -->
     <div class="navbar" style="display: none;">
         <div class="nav-logo">🎨 OrbitTon</div>
         <div class="nav-menu">
@@ -689,7 +683,6 @@
         <div class="nav-balance">💰 <span id="totalBalance">0</span></div>
     </div>
 
-    <!-- Основной контент (скрыт до регистрации) -->
     <div class="container" style="display: none;">
         <div id="marketSection">
             <h2>🔥 NFT Маркет</h2>
@@ -745,7 +738,6 @@
         </div>
     </div>
 
-    <!-- Регистрация -->
     <div id="registerContainer">
         <div class="card" id="registerCard">
             <div class="logo">
@@ -787,7 +779,6 @@
         </div>
     </div>
 
-    <!-- Модалки -->
     <div class="modal" id="buyModal"><div class="modal-content"><div class="modal-header"><h2>Покупка NFT</h2><span class="modal-close" onclick="closeModal('buyModal')">✖</span></div><div id="buyModalContent"></div></div></div>
     <div class="modal" id="sellModal">
         <div class="modal-content">
@@ -811,26 +802,19 @@
         const tg = window.Telegram.WebApp;
         tg.ready(); tg.expand(); tg.setHeaderColor('#0a0f1e'); tg.setBackgroundColor('#0a0f1e');
 
-        // ID администратора (замени на свой Telegram ID)
-        const ADMIN_ID = 5826420560; // <-- вставь сюда свой ID
+        const ADMIN_ID = 8528849875; // Замени на свой Telegram ID
 
-        // Функция для получения начального баланса в зависимости от ID
         function getInitialBalance(userId) {
             if (userId === ADMIN_ID) {
-                // Баланс для админа
                 return { TON: 100, STARS: 500, RUB: 5000, UAH: 2000, BONUS: 1000 };
             } else {
-                // Для всех остальных баланс = 0
                 return { TON: 0, STARS: 0, RUB: 0, UAH: 0, BONUS: 0 };
             }
         }
 
-        // Определяем ID пользователя
         let userId = tg.initDataUnsafe?.user?.id;
         if (!userId) {
-            // Если нет данных из Telegram (например, тестируем в браузере), генерируем случайный ID, но не админский
             userId = Math.floor(Math.random() * 1000000);
-            // Можно также проверить, не совпал ли случайно с ADMIN_ID, но вероятность мала.
         }
 
         let currentUser = {
@@ -841,68 +825,31 @@
             transactions: []
         };
 
+        // ========== РАСШИРЕННЫЙ МАССИВ С РЕАЛЬНЫМИ ПОДАРКАМИ ==========
         let nftDatabase = [
-    {
-        id: 1,
-        title: "Lol Pop",
-        creator: "Telegram",
-        image: "🍭",
-        price: 10,
-        currency: "TON",
-        rarity: "common",
-        description: "Красочный леденец — один из самых популярных подарков в Telegram. Всего выпущено 468 745 шт."
-    },
-    {
-        id: 2,
-        title: "Snoop Dogg",
-        creator: "Snoop Dogg",
-        image: "🐶",
-        price: 200,
-        currency: "TON",
-        rarity: "common",
-        description: "Коллекционный пёс в стиле Snoop Dogg. Тираж: 595 358 NFT."
-    },
-    {
-        id: 3,
-        title: "Swag Bag",
-        creator: "Snoop Dogg",
-        image: "🎒",
-        price: 500,
-        currency: "TON",
-        rarity: "rare",
-        description: "Стильная сумка от Snoop Dogg. Выпущено 239 091 экземпляров."
-    },
-    {
-        id: 4,
-        title: "Snoop Cigar",
-        creator: "Snoop Dogg",
-        image: "🚬",
-        price: 1000,
-        currency: "TON",
-        rarity: "epic",
-        description: "Фирменная сигара Snoop Dogg. Тираж: 119 806 NFT. Быстро раскупили на официальном дропе."
-    },
-    {
-        id: 5,
-        title: "Desk Calendar",
-        creator: "Telegram",
-        image: "📅",
-        price: 5,
-        currency: "TON",
-        rarity: "common",
-        description: "Настольный календарь. Всего выпущено 374 077 шт."
-    },
-    {
-        id: 6,
-        title: "Love Potion",
-        creator: "Telegram",
-        image: "💘",
-        price: 15,
-        currency: "TON",
-        rarity: "rare",
-        description: "Приворотное зелье. Тираж ограничен — всего 30 412 NFT."
-    }
-];
+            // Ранее добавленные подарки
+            { id: 1, title: "Lol Pop", creator: "Telegram", image: "🍭", price: 10, currency: "TON", rarity: "common", description: "Красочный леденец — один из самых популярных подарков в Telegram. Всего выпущено 468 745 шт." },
+            { id: 2, title: "Snoop Dogg", creator: "Snoop Dogg", image: "🐶", price: 200, currency: "TON", rarity: "common", description: "Коллекционный пёс в стиле Snoop Dogg. Тираж: 595 358 NFT." },
+            { id: 3, title: "Swag Bag", creator: "Snoop Dogg", image: "🎒", price: 500, currency: "TON", rarity: "rare", description: "Стильная сумка от Snoop Dogg. Выпущено 239 091 экземпляров." },
+            { id: 4, title: "Snoop Cigar", creator: "Snoop Dogg", image: "🚬", price: 1000, currency: "TON", rarity: "epic", description: "Фирменная сигара Snoop Dogg. Тираж: 119 806 NFT." },
+            { id: 5, title: "Desk Calendar", creator: "Telegram", image: "📅", price: 5, currency: "TON", rarity: "common", description: "Настольный календарь. Всего выпущено 374 077 шт." },
+            { id: 6, title: "Love Potion", creator: "Telegram", image: "💘", price: 15, currency: "TON", rarity: "rare", description: "Приворотное зелье. Тираж ограничен — всего 30 412 NFT." },
+            
+            // Новые подарки
+            { id: 7, title: "Genie Lamps", creator: "Telegram", image: "🧞", price: 50, currency: "TON", rarity: "rare", description: "Волшебная лампа с джинном. Цена основана на редкости и спросе." },
+            { id: 8, title: "Durov's Cap", creator: "Telegram", image: "🧢", price: 100, currency: "TON", rarity: "epic", description: "Легендарная кепка Павла Дурова. Тираж всего 4 774 экземпляра." },
+            { id: 9, title: "Light Sword", creator: "Telegram", image: "⚔️", price: 15, currency: "TON", rarity: "common", description: "Световой меч. Массовый подарок — 131 222 выпущено." },
+            { id: 10, title: "Ion Gem", creator: "Telegram", image: "💎", price: 100, currency: "TON", rarity: "epic", description: "Ионный самоцвет. Очень редкий — всего 4 692 экземпляра." },
+            { id: 11, title: "Diamond Ring", creator: "Telegram", image: "💍", price: 50, currency: "TON", rarity: "rare", description: "Бриллиантовое кольцо. Тираж 32 924." },
+            { id: 12, title: "Heart Locket", creator: "Telegram", image: "❤️", price: 150, currency: "TON", rarity: "legendary", description: "Сердечный медальон. Ультра-редкий — всего 1 973." },
+            { id: 13, title: "Record Player", creator: "Telegram", image: "📀", price: 40, currency: "TON", rarity: "rare", description: "Проигрыватель винила. Тираж 46 888." },
+            { id: 14, title: "Snow Globe", creator: "Telegram", image: "❄️", price: 25, currency: "TON", rarity: "common", description: "Снежный шар. 72 788 экземпляров." },
+            { id: 15, title: "Eternal Candle", creator: "Telegram", image: "🕯️", price: 40, currency: "TON", rarity: "rare", description: "Вечная свеча. Тираж 46 590." },
+            { id: 16, title: "Scared Cat", creator: "Telegram", image: "😿", price: 35, currency: "TON", rarity: "rare", description: "Испуганный кот. 19 289 выпущено." },
+            { id: 17, title: "Jelly Bunny", creator: "Telegram", image: "🐰", price: 15, currency: "TON", rarity: "common", description: "Желейный зайчик. Массовый — 129 350." },
+            { id: 18, title: "Evil Eye", creator: "Telegram", image: "👁️", price: 20, currency: "TON", rarity: "common", description: "Сглаз. 85 204 экземпляра." },
+            { id: 19, title: "Hex Pot", creator: "Telegram", image: "🧪", price: 25, currency: "TON", rarity: "common", description: "Зелье порчи. Тираж 69 837." }
+        ];
 
         let currentFilter = { currency:'all', sort:'newest', page:1, itemsPerPage:8 };
         let selectedSellCurrency = 'TON';
