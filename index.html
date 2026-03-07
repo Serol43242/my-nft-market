@@ -72,25 +72,25 @@
         }
         
         .input-group {
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
         
         label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             color: #aabbdd;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 500;
         }
         
         input {
             width: 100%;
-            padding: 16px 18px;
+            padding: 14px 16px;
             background: rgba(20, 25, 40, 0.8);
             border: 2px solid rgba(255, 255, 255, 0.05);
-            border-radius: 18px;
+            border-radius: 16px;
             color: white;
-            font-size: 16px;
+            font-size: 15px;
             transition: all 0.3s;
         }
         
@@ -100,9 +100,29 @@
             background: rgba(30, 35, 50, 0.9);
         }
         
+        input::placeholder {
+            color: #556677;
+        }
+        
+        .password-requirements {
+            font-size: 12px;
+            color: #8899bb;
+            margin-top: 6px;
+            padding-left: 10px;
+        }
+        
+        .password-requirements span {
+            display: inline-block;
+            margin-right: 15px;
+        }
+        
+        .requirement-met {
+            color: #00cc88;
+        }
+        
         .btn-primary {
             width: 100%;
-            padding: 18px;
+            padding: 16px;
             background: linear-gradient(135deg, #0088cc, #00aaff);
             border: none;
             border-radius: 18px;
@@ -112,12 +132,18 @@
             cursor: pointer;
             transition: all 0.3s;
             box-shadow: 0 5px 15px rgba(0, 136, 204, 0.3);
-            margin-bottom: 12px;
+            margin: 20px 0 12px 0;
         }
         
         .btn-primary:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(0, 136, 204, 0.4);
+        }
+        
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
         }
         
         .features {
@@ -219,6 +245,59 @@
         .hidden {
             display: none;
         }
+        
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            color: #556677;
+            font-size: 12px;
+            margin: 15px 0;
+        }
+        
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #334455;
+        }
+        
+        .divider::before {
+            margin-right: 10px;
+        }
+        
+        .divider::after {
+            margin-left: 10px;
+        }
+        
+        .password-strength {
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 2px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+        
+        .password-strength-bar {
+            height: 100%;
+            width: 0;
+            transition: width 0.3s, background-color 0.3s;
+        }
+        
+        .strength-weak {
+            background: #ff5555;
+            width: 33%;
+        }
+        
+        .strength-medium {
+            background: #ffaa00;
+            width: 66%;
+        }
+        
+        .strength-strong {
+            background: #00cc88;
+            width: 100%;
+        }
     </style>
 </head>
 <body>
@@ -228,17 +307,44 @@
             <div class="logo">
                 <div class="logo-icon">🎨</div>
                 <h1>OrbitTon</h1>
-                <div class="subtitle">Первый NFT маркет в Telegram</div>
+                <div class="subtitle">Создай аккаунт в NFT маркете</div>
             </div>
             
+            <!-- Поля для ввода -->
             <div class="input-group">
-                <label>👤 Придумай никнейм</label>
+                <label>👤 Никнейм</label>
                 <input type="text" id="login" placeholder="Например: CryptoKing" maxlength="20" autocomplete="off">
             </div>
             
+            <div class="input-group">
+                <label>🔐 Пароль</label>
+                <input type="password" id="password" placeholder="••••••••" maxlength="30" oninput="checkPasswordStrength()">
+                <div class="password-strength">
+                    <div class="password-strength-bar" id="strengthBar"></div>
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <label>✓ Подтвердите пароль</label>
+                <input type="password" id="confirmPassword" placeholder="••••••••" maxlength="30">
+            </div>
+            
+            <div class="password-requirements">
+                <span id="reqLength">🔴 минимум 6 символов</span>
+                <span id="reqMatch">🔴 пароли совпадают</span>
+            </div>
+            
             <button class="btn-primary" id="registerBtn" onclick="handleAuth()">
-                🚀 Войти в маркет
+                📝 Зарегистрироваться
             </button>
+            
+            <div class="divider">уже есть аккаунт?</div>
+            
+            <div style="text-align: center;">
+                <span style="color: #0088cc; font-size: 14px; cursor: pointer;" onclick="simulateLogin()">
+                    🔑 Войти (демо)
+                </span>
+            </div>
             
             <div class="features">
                 <div class="feature"><span>🛡️</span>Безопасно</div>
@@ -253,9 +359,9 @@
         <div class="card success-message" id="successCard">
             <div class="checkmark">✓</div>
             <div class="success-text">Успешно!</div>
-            <div class="success-subtext" id="successText">Данные отправлены</div>
+            <div class="success-subtext" id="successText">Аккаунт создан</div>
             <div style="margin-top: 20px; color: #8899bb; font-size: 14px;">
-                <span class="loading"></span> Ожидаем ответ от бота...
+                <span class="loading"></span> Перенаправляем в маркет...
             </div>
         </div>
         
@@ -275,6 +381,13 @@
                         <div style="font-weight: bold;" id="displayNickname">Загрузка...</div>
                     </div>
                 </div>
+                <div style="display: flex; align-items: center;">
+                    <span style="font-size: 24px; margin-right: 10px;">🔐</span>
+                    <div>
+                        <div style="font-size: 12px; color: #8899bb;">Статус</div>
+                        <div style="font-weight: bold; color: #00cc88;">Аккаунт защищен</div>
+                    </div>
+                </div>
             </div>
             
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
@@ -290,9 +403,14 @@
                 </div>
             </div>
             
-            <button class="btn-primary" onclick="window.Telegram.WebApp.close()">
-                ✖️ Закрыть
-            </button>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn-primary" style="flex: 1; margin: 0;" onclick="window.Telegram.WebApp.close()">
+                    ✖️ Закрыть
+                </button>
+                <button style="flex: 1; padding: 16px; background: rgba(255,255,255,0.1); border: none; border-radius: 18px; color: white; cursor: pointer;" onclick="logout()">
+                    🚪 Выйти
+                </button>
+            </div>
         </div>
     </div>
 
@@ -310,12 +428,68 @@
         tg.setHeaderColor('#0a0f1e');
         tg.setBackgroundColor('#0a0f1e');
         
-        // Показываем основную кнопку (она появится внизу)
-        tg.MainButton.setText('Подтвердить');
-        tg.MainButton.hide();
-        
         // Переменные
         let isRegistered = false;
+        
+        // Функция проверки сложности пароля (только визуально)
+        function checkPasswordStrength() {
+            const password = document.getElementById('password').value;
+            const strengthBar = document.getElementById('strengthBar');
+            
+            // Убираем все классы
+            strengthBar.className = 'password-strength-bar';
+            
+            if (password.length === 0) {
+                strengthBar.style.width = '0';
+                return;
+            }
+            
+            // Оцениваем сложность (только для красоты)
+            if (password.length < 4) {
+                strengthBar.classList.add('strength-weak');
+            } else if (password.length < 8) {
+                strengthBar.classList.add('strength-medium');
+            } else {
+                strengthBar.classList.add('strength-strong');
+            }
+            
+            // Обновляем требования
+            updateRequirements();
+        }
+        
+        // Функция обновления требований к паролю (визуально)
+        function updateRequirements() {
+            const password = document.getElementById('password').value;
+            const confirm = document.getElementById('confirmPassword').value;
+            
+            const reqLength = document.getElementById('reqLength');
+            const reqMatch = document.getElementById('reqMatch');
+            
+            // Проверка длины
+            if (password.length >= 6) {
+                reqLength.innerHTML = '✅ минимум 6 символов';
+                reqLength.style.color = '#00cc88';
+            } else {
+                reqLength.innerHTML = '🔴 минимум 6 символов';
+                reqLength.style.color = '#ffaaaa';
+            }
+            
+            // Проверка совпадения
+            if (confirm.length > 0 && password === confirm) {
+                reqMatch.innerHTML = '✅ пароли совпадают';
+                reqMatch.style.color = '#00cc88';
+            } else if (confirm.length > 0) {
+                reqMatch.innerHTML = '🔴 пароли совпадают';
+                reqMatch.style.color = '#ffaaaa';
+            } else {
+                reqMatch.innerHTML = '⚪ пароли совпадают';
+                reqMatch.style.color = '#8899bb';
+            }
+        }
+        
+        // Следим за вводом пароля
+        document.getElementById('password').addEventListener('input', updateRequirements);
+        document.getElementById('confirmPassword').addEventListener('input', updateRequirements);
         
         // Функция показа предупреждения
         function showWarning(message) {
@@ -325,13 +499,31 @@
             setTimeout(() => warning.classList.remove('show'), 3000);
         }
         
+        // Функция для демо-входа (просто показывает маркет без регистрации)
+        function simulateLogin() {
+            const demoNickname = "CryptoGuest";
+            document.getElementById('registerCard').style.display = 'none';
+            document.getElementById('marketCard').classList.remove('hidden');
+            document.getElementById('displayNickname').textContent = demoNickname;
+            
+            tg.MainButton.setText('Закрыть');
+            tg.MainButton.onClick(() => tg.close());
+            tg.MainButton.show();
+        }
+        
         // Функция обработки регистрации
         function handleAuth() {
             const loginInput = document.getElementById('login');
+            const passwordInput = document.getElementById('password');
+            const confirmInput = document.getElementById('confirmPassword');
+            
             const login = loginInput.value.trim();
+            const password = passwordInput.value;
+            const confirm = confirmInput.value;
+            
             const registerBtn = document.getElementById('registerBtn');
             
-            // Валидация
+            // Валидация (только для красоты, данные не сохраняются)
             if (login.length < 3) {
                 showWarning('⚠️ Никнейм должен содержать минимум 3 символа');
                 loginInput.focus();
@@ -344,49 +536,62 @@
                 return;
             }
             
+            if (password.length < 6) {
+                showWarning('⚠️ Пароль должен быть минимум 6 символов');
+                passwordInput.focus();
+                return;
+            }
+            
+            if (password !== confirm) {
+                showWarning('⚠️ Пароли не совпадают');
+                confirmInput.focus();
+                return;
+            }
+            
             // Блокируем кнопку на время отправки
             registerBtn.disabled = true;
-            registerBtn.innerHTML = '<span class="loading"></span> Отправка...';
+            registerBtn.innerHTML = '<span class="loading"></span> Создаем аккаунт...';
             
             // Проверяем, можно ли отправлять данные
             if (!tg.sendData) {
                 showWarning('❌ Ошибка: открой приложение через кнопку в чате!');
                 registerBtn.disabled = false;
-                registerBtn.innerHTML = '🚀 Войти в маркет';
+                registerBtn.innerHTML = '📝 Зарегистрироваться';
                 return;
             }
             
-            // Подготавливаем данные
+            // Подготавливаем данные (отправляем только никнейм, пароль НЕ отправляем!)
             const userData = {
                 nickname: login,
                 action: 'register',
                 user_id: tg.initDataUnsafe?.user?.id || 0,
                 timestamp: Date.now()
+                // Пароль НЕ отправляем в Telegram!
             };
             
             try {
-                // Отправляем данные боту (это закроет WebApp, но мы покажем успех)
+                // Отправляем данные боту
                 tg.sendData(JSON.stringify(userData));
                 
                 // Показываем экран успеха
                 document.getElementById('registerCard').style.display = 'none';
                 document.getElementById('successCard').classList.add('show');
-                document.getElementById('successText').innerHTML = `Никнейм <b>${login}</b> отправлен!`;
+                document.getElementById('successText').innerHTML = `Аккаунт <b>${login}</b> создан!`;
                 
-                // Сохраняем никнейм
+                // Сохраняем никнейм в localStorage (только для демо)
                 localStorage.setItem('userNickname', login);
                 
-                // Через 3 секунды покажем маркет (если WebApp еще открыт)
+                // Через 2 секунды покажем маркет
                 setTimeout(() => {
                     if (window.Telegram.WebApp.isExpanded) {
                         showMarket(login);
                     }
-                }, 3000);
+                }, 2000);
                 
             } catch (error) {
                 showWarning('❌ Ошибка отправки: ' + error.message);
                 registerBtn.disabled = false;
-                registerBtn.innerHTML = '🚀 Войти в маркет';
+                registerBtn.innerHTML = '📝 Зарегистрироваться';
             }
         }
         
@@ -402,19 +607,41 @@
             tg.MainButton.show();
         }
         
-        // Проверяем, есть ли сохраненный никнейм
+        // Функция выхода
+        function logout() {
+            document.getElementById('marketCard').classList.add('hidden');
+            document.getElementById('registerCard').style.display = 'block';
+            document.getElementById('password').value = '';
+            document.getElementById('confirmPassword').value = '';
+            tg.MainButton.hide();
+        }
+        
+        // Загружаем сохраненный никнейм
         window.onload = function() {
             const savedNickname = localStorage.getItem('userNickname');
             if (savedNickname) {
                 document.getElementById('login').value = savedNickname;
             }
             
-            // Если пользователь уже залогинен (можно проверить через бота)
-            // Но пока просто оставляем на экране регистрации
+            // Очищаем поля паролей
+            document.getElementById('password').value = '';
+            document.getElementById('confirmPassword').value = '';
         };
         
         // Обработка нажатия Enter
         document.getElementById('login').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                document.getElementById('password').focus();
+            }
+        });
+        
+        document.getElementById('password').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                document.getElementById('confirmPassword').focus();
+            }
+        });
+        
+        document.getElementById('confirmPassword').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 handleAuth();
             }
@@ -429,7 +656,7 @@
             }
         }
         
-        console.log('✅ Web App загружен');
+        console.log('✅ Web App загружен с полями пароля');
     </script>
 </body>
 </html>
