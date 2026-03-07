@@ -104,6 +104,18 @@
             color: #556677;
         }
         
+        .random-nick {
+            font-size: 12px;
+            color: #0088cc;
+            margin-top: 5px;
+            cursor: pointer;
+            display: inline-block;
+        }
+        
+        .random-nick:hover {
+            text-decoration: underline;
+        }
+        
         .password-requirements {
             font-size: 12px;
             color: #8899bb;
@@ -314,6 +326,7 @@
             <div class="input-group">
                 <label>👤 Никнейм</label>
                 <input type="text" id="login" placeholder="Например: CryptoKing" maxlength="20" autocomplete="off">
+                <div class="random-nick" onclick="generateRandomNick()">🎲 Случайный ник</div>
             </div>
             
             <div class="input-group">
@@ -431,6 +444,34 @@
         // Переменные
         let isRegistered = false;
         
+        // Массив для генерации случайных ников
+        const nickPrefixes = ['Crypto', 'NFT', 'Meta', 'Cyber', 'Digital', 'Virtual', 'Pixel', 'Block', 'Chain', 'Token'];
+        const nickSuffixes = ['King', 'Queen', 'Lord', 'Master', 'Guru', 'Hunter', 'Whale', 'Diamond', 'Platinum', 'Gold'];
+        const nickNumbers = ['', '123', '777', '000', '420', '69', '1337', '2024', '2025', '2026'];
+        
+        // Функция генерации случайного ника
+        function generateRandomNick() {
+            const prefix = nickPrefixes[Math.floor(Math.random() * nickPrefixes.length)];
+            const suffix = nickSuffixes[Math.floor(Math.random() * nickSuffixes.length)];
+            const number = nickNumbers[Math.floor(Math.random() * nickNumbers.length)];
+            
+            let randomNick = prefix + suffix;
+            if (number && Math.random() > 0.5) {
+                randomNick += number;
+            }
+            
+            document.getElementById('login').value = randomNick;
+        }
+        
+        // Генерируем случайный ник при загрузке страницы
+        window.onload = function() {
+            generateRandomNick();
+            
+            // Очищаем поля паролей
+            document.getElementById('password').value = '';
+            document.getElementById('confirmPassword').value = '';
+        };
+        
         // Функция проверки сложности пароля (только визуально)
         function checkPasswordStrength() {
             const password = document.getElementById('password').value;
@@ -501,7 +542,7 @@
         
         // Функция для демо-входа (просто показывает маркет без регистрации)
         function simulateLogin() {
-            const demoNickname = "CryptoGuest";
+            const demoNickname = document.getElementById('login').value || "CryptoGuest";
             document.getElementById('registerCard').style.display = 'none';
             document.getElementById('marketCard').classList.remove('hidden');
             document.getElementById('displayNickname').textContent = demoNickname;
@@ -614,19 +655,10 @@
             document.getElementById('password').value = '';
             document.getElementById('confirmPassword').value = '';
             tg.MainButton.hide();
-        }
-        
-        // Загружаем сохраненный никнейм
-        window.onload = function() {
-            const savedNickname = localStorage.getItem('userNickname');
-            if (savedNickname) {
-                document.getElementById('login').value = savedNickname;
-            }
             
-            // Очищаем поля паролей
-            document.getElementById('password').value = '';
-            document.getElementById('confirmPassword').value = '';
-        };
+            // Генерируем новый случайный ник при выходе
+            generateRandomNick();
+        }
         
         // Обработка нажатия Enter
         document.getElementById('login').addEventListener('keypress', (e) => {
@@ -649,14 +681,8 @@
         
         // Получаем информацию о пользователе
         const user = tg.initDataUnsafe?.user;
-        if (user?.first_name) {
-            const loginInput = document.getElementById('login');
-            if (!loginInput.value) {
-                loginInput.placeholder = user.first_name;
-            }
-        }
         
-        console.log('✅ Web App загружен с полями пароля');
+        console.log('✅ Web App загружен с генерацией случайных ников');
     </script>
 </body>
 </html>
