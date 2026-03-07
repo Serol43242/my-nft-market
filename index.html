@@ -80,11 +80,10 @@
         <button class="btn-reg" onclick="handleAuth()">Зарегистрироваться</button>
     </div>
 
+<!-- Исправленный путь к скрипту -->
+<script src="https://telegram.org"></script>
+
 <script>
-    function handleAuth() {
-    alert("Кнопка нажата!"); // ДОБАВЬ ЭТУ СТРОКУ ДЛЯ ТЕСТА
-    const login = document.getElementById("login").value.trim();}
-    // ... остальной код
     const tg = window.Telegram.WebApp;
     tg.ready();
     tg.expand();
@@ -94,34 +93,28 @@
         const p1 = document.getElementById("pass1").value;
         const p2 = document.getElementById("pass2").value;
 
-        // 1. Простая валидация
         if (login.length < 3) {
-            tg.showAlert("Логин слишком короткий!");
-            return;
-        }
-        if (p1.length < 4) {
-            tg.showAlert("Пароль должен быть минимум 4 символа!");
+            tg.showPopup({ message: "Логин слишком короткий!" });
             return;
         }
         if (p1 !== p2) {
-            tg.showAlert("Пароли не совпадают!");
+            tg.showPopup({ message: "Пароли не совпадают!" });
             return;
         }
 
-        // 2. Отправка данных боту (визуальная)
         const data = JSON.stringify({ 
             nickname: login,
             status: "registered" 
         });
 
+        // sendData работает ТОЛЬКО если Mini App открыт через KeyboardButton
         if (tg.sendData) {
             tg.sendData(data);
-            tg.close();
         } else {
-            alert("Ошибка: Запусти через кнопку в боте!");
+            alert("Используйте кнопку 'Открыть Market 🚀' в меню бота");
         }
     }
-    
 </script>
+
 </body>
 </html>
