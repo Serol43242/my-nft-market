@@ -3,59 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>OrbitTon</title>
+    <title>OrbitTon Registration</title>
     
-    <!-- Подключаем скрипт Telegram -->
+    <!-- Правильный скрипт Telegram -->
     <script src="https://telegram.org"></script>
     
     <style>
         body {
             background-color: #0f0f0f;
             color: white;
-            font-family: 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Segoe UI', sans-serif;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
             height: 100vh;
             margin: 0;
-            overflow: hidden;
-            user-select: none;
-            -webkit-user-select: none;
         }
 
         .card {
             background: #1a1a1a;
-            padding: 30px;
+            padding: 25px;
             border-radius: 24px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            width: 80%;
-            max-width: 300px;
+            width: 85%;
+            max-width: 320px;
             text-align: center;
             border: 1px solid #333;
         }
 
         h2 { 
-            margin: 0 0 10px 0; 
+            margin-bottom: 20px;
             background: linear-gradient(45deg, #0088cc, #00eeff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        
-        p { color: #888; font-size: 14px; margin-bottom: 25px; }
 
         input {
             width: 100%;
             padding: 12px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             border-radius: 12px;
             border: 1px solid #444;
             background: #222;
             color: white;
             box-sizing: border-box;
             outline: none;
-            font-size: 16px;
+            font-size: 14px;
         }
+
+        input:focus { border-color: #0088cc; }
 
         .btn-reg {
             background: linear-gradient(45deg, #0088cc, #00aaff);
@@ -66,39 +61,62 @@
             width: 100%;
             font-weight: bold;
             cursor: pointer;
+            margin-top: 10px;
         }
 
-        .btn-reg:active { transform: scale(0.98); }
+        .btn-reg:active { transform: scale(0.97); }
     </style>
 </head>
 <body>
 
     <div class="card">
         <h2>OrbitTon</h2>
-        <p>Создай профиль в маркете</p>
+        <p style="color: #888; font-size: 13px;">Создание нового аккаунта</p>
         
-        <input type="text" id="username" placeholder="Ваш никнейм">
-        <button class="btn-reg" onclick="registerUser()">Зарегистрироваться</button>
+        <input type="text" id="login" placeholder="Придумайте логин">
+        <input type="password" id="pass1" placeholder="Пароль">
+        <input type="password" id="pass2" placeholder="Повторите пароль">
+        
+        <button class="btn-reg" onclick="handleAuth()">Зарегистрироваться</button>
     </div>
 
-    <script>
-        const tg = window.Telegram.WebApp;
-        tg.expand();
-        tg.ready();
+<script>
+    const tg = window.Telegram.WebApp;
+    tg.ready();
+    tg.expand();
 
-        function registerUser() {
-            const nameInput = document.getElementById("username");
-            const nickname = nameInput.value.trim();
+    function handleAuth() {
+        const login = document.getElementById("login").value.trim();
+        const p1 = document.getElementById("pass1").value;
+        const p2 = document.getElementById("pass2").value;
 
-            if (nickname.length < 3) {
-                tg.showAlert("Ник слишком короткий!");
-                return;
-            }
-
-            const data = { nickname: nickname };
-            tg.sendData(JSON.stringify(data));
-            tg.close();
+        // 1. Простая валидация
+        if (login.length < 3) {
+            tg.showAlert("Логин слишком короткий!");
+            return;
         }
-    </script>
+        if (p1.length < 4) {
+            tg.showAlert("Пароль должен быть минимум 4 символа!");
+            return;
+        }
+        if (p1 !== p2) {
+            tg.showAlert("Пароли не совпадают!");
+            return;
+        }
+
+        // 2. Отправка данных боту (визуальная)
+        const data = JSON.stringify({ 
+            nickname: login,
+            status: "registered" 
+        });
+
+        if (tg.sendData) {
+            tg.sendData(data);
+            tg.close();
+        } else {
+            alert("Ошибка: Запусти через кнопку в боте!");
+        }
+    }
+</script>
 </body>
 </html>
