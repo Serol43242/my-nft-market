@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>OrbitTon NFT Market</title>
     
-    <!-- ВАЖНО: Правильный путь к Telegram Web App SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     
     <style>
@@ -20,10 +19,12 @@
             color: #fff;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             padding: 20px;
+        }
+        
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
         }
         
         .card {
@@ -31,15 +32,14 @@
             backdrop-filter: blur(10px);
             border-radius: 32px;
             padding: 30px 25px;
-            width: 100%;
-            max-width: 380px;
             border: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            margin-bottom: 20px;
         }
         
         .logo {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
         
         .logo-icon {
@@ -67,7 +67,7 @@
         
         .subtitle {
             color: #8899bb;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             font-size: 14px;
         }
         
@@ -100,10 +100,6 @@
             background: rgba(30, 35, 50, 0.9);
         }
         
-        input::placeholder {
-            color: #556677;
-        }
-        
         .btn-primary {
             width: 100%;
             padding: 18px;
@@ -124,34 +120,12 @@
             box-shadow: 0 8px 20px rgba(0, 136, 204, 0.4);
         }
         
-        .btn-primary:active {
-            transform: translateY(0);
-        }
-        
-        .btn-secondary {
-            width: 100%;
-            padding: 16px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 18px;
-            color: #aabbdd;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.3s;
-            backdrop-filter: blur(5px);
-        }
-        
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-        }
-        
         .features {
-            margin-top: 25px;
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 10px;
             text-align: center;
+            margin-top: 25px;
         }
         
         .feature {
@@ -170,12 +144,12 @@
         
         .warning {
             margin-top: 15px;
-            padding: 10px;
+            padding: 12px;
             background: rgba(255, 100, 100, 0.1);
             border: 1px solid rgba(255, 100, 100, 0.2);
             border-radius: 12px;
             color: #ffaaaa;
-            font-size: 12px;
+            font-size: 13px;
             text-align: center;
             display: none;
         }
@@ -186,7 +160,7 @@
         
         .success-message {
             text-align: center;
-            padding: 20px;
+            padding: 30px 20px;
             display: none;
         }
         
@@ -195,56 +169,131 @@
         }
         
         .checkmark {
-            width: 60px;
-            height: 60px;
+            width: 70px;
+            height: 70px;
             border-radius: 50%;
             background: #00cc88;
             margin: 0 auto 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 30px;
+            font-size: 35px;
             color: white;
+            animation: scaleIn 0.5s ease;
+        }
+        
+        @keyframes scaleIn {
+            0% { transform: scale(0); }
+            70% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .success-text {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #00cc88;
+        }
+        
+        .success-subtext {
+            color: #aabbdd;
+            margin-bottom: 30px;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .hidden {
+            display: none;
         }
     </style>
 </head>
 <body>
-    <div class="card" id="registerCard">
-        <div class="logo">
-            <div class="logo-icon">NFT</div>
-            <h1>OrbitTon</h1>
-            <div class="subtitle">Первый NFT маркет в Telegram</div>
+    <div class="container">
+        <!-- Карточка регистрации -->
+        <div class="card" id="registerCard">
+            <div class="logo">
+                <div class="logo-icon">🎨</div>
+                <h1>OrbitTon</h1>
+                <div class="subtitle">Первый NFT маркет в Telegram</div>
+            </div>
+            
+            <div class="input-group">
+                <label>👤 Придумай никнейм</label>
+                <input type="text" id="login" placeholder="Например: CryptoKing" maxlength="20" autocomplete="off">
+            </div>
+            
+            <button class="btn-primary" id="registerBtn" onclick="handleAuth()">
+                🚀 Войти в маркет
+            </button>
+            
+            <div class="features">
+                <div class="feature"><span>🛡️</span>Безопасно</div>
+                <div class="feature"><span>⚡</span>Мгновенно</div>
+                <div class="feature"><span>💎</span>NFT</div>
+            </div>
+            
+            <div class="warning" id="warning"></div>
         </div>
         
-        <div class="input-group">
-            <label>👤 Придумай никнейм</label>
-            <input type="text" id="login" placeholder="Например: CryptoKing" maxlength="20">
+        <!-- Карточка успеха (показывается после отправки) -->
+        <div class="card success-message" id="successCard">
+            <div class="checkmark">✓</div>
+            <div class="success-text">Успешно!</div>
+            <div class="success-subtext" id="successText">Данные отправлены</div>
+            <div style="margin-top: 20px; color: #8899bb; font-size: 14px;">
+                <span class="loading"></span> Ожидаем ответ от бота...
+            </div>
         </div>
         
-        <button class="btn-primary" onclick="handleAuth()">
-            🚀 Начать торговлю
-        </button>
-        
-        <button class="btn-secondary" onclick="window.Telegram.WebApp.close()">
-            ✖️ Закрыть
-        </button>
-        
-        <div class="features">
-            <div class="feature"><span>🛡️</span>Безопасно</div>
-            <div class="feature"><span>⚡</span>Быстро</div>
-            <div class="feature"><span>💎</span>NFT</div>
+        <!-- Карточка маркета (появится после регистрации) -->
+        <div class="card hidden" id="marketCard">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <span style="font-size: 50px;">🖼️</span>
+                <h2 style="margin: 10px 0;">NFT Маркет</h2>
+                <p style="color: #8899bb;">Добро пожаловать!</p>
+            </div>
+            
+            <div style="background: rgba(0,136,204,0.1); border-radius: 16px; padding: 15px; margin-bottom: 15px;">
+                <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                    <span style="font-size: 24px; margin-right: 10px;">👤</span>
+                    <div>
+                        <div style="font-size: 12px; color: #8899bb;">Твой ник</div>
+                        <div style="font-weight: bold;" id="displayNickname">Загрузка...</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+                <div style="background: rgba(255,255,255,0.05); border-radius: 16px; padding: 15px; text-align: center;">
+                    <span style="font-size: 24px;">💰</span>
+                    <div style="font-size: 12px; color: #8899bb;">Баланс</div>
+                    <div style="font-weight: bold;">0 TON</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.05); border-radius: 16px; padding: 15px; text-align: center;">
+                    <span style="font-size: 24px;">🖼️</span>
+                    <div style="font-size: 12px; color: #8899bb;">NFT</div>
+                    <div style="font-weight: bold;">0</div>
+                </div>
+            </div>
+            
+            <button class="btn-primary" onclick="window.Telegram.WebApp.close()">
+                ✖️ Закрыть
+            </button>
         </div>
-        
-        <div class="warning" id="warning">
-            ⚠️ Ошибка: никнейм должен содержать минимум 3 символа
-        </div>
-    </div>
-    
-    <div class="card success-message" id="successCard">
-        <div class="checkmark">✓</div>
-        <h2>Регистрация успешна!</h2>
-        <p style="margin: 15px 0; color: #aabbdd;">Данные отправлены в бот</p>
-        <div style="font-size: 12px; color: #8899bb;">Закрываю приложение...</div>
     </div>
 
     <script>
@@ -257,14 +306,18 @@
         // Растягиваем на весь экран
         tg.expand();
         
-        // Настраиваем цвета под тему Telegram
+        // Настраиваем цвета
         tg.setHeaderColor('#0a0f1e');
         tg.setBackgroundColor('#0a0f1e');
         
-        // Делаем основную кнопку (она появится внизу в Telegram)
+        // Показываем основную кнопку (она появится внизу)
         tg.MainButton.setText('Подтвердить');
-        tg.MainButton.hide(); // Прячем пока что
+        tg.MainButton.hide();
         
+        // Переменные
+        let isRegistered = false;
+        
+        // Функция показа предупреждения
         function showWarning(message) {
             const warning = document.getElementById('warning');
             warning.textContent = message;
@@ -272,63 +325,111 @@
             setTimeout(() => warning.classList.remove('show'), 3000);
         }
         
+        // Функция обработки регистрации
         function handleAuth() {
-            const login = document.getElementById('login').value.trim();
+            const loginInput = document.getElementById('login');
+            const login = loginInput.value.trim();
+            const registerBtn = document.getElementById('registerBtn');
             
             // Валидация
             if (login.length < 3) {
                 showWarning('⚠️ Никнейм должен содержать минимум 3 символа');
+                loginInput.focus();
                 return;
             }
             
             if (login.length > 20) {
                 showWarning('⚠️ Никнейм слишком длинный (максимум 20 символов)');
+                loginInput.focus();
                 return;
             }
+            
+            // Блокируем кнопку на время отправки
+            registerBtn.disabled = true;
+            registerBtn.innerHTML = '<span class="loading"></span> Отправка...';
             
             // Проверяем, можно ли отправлять данные
             if (!tg.sendData) {
                 showWarning('❌ Ошибка: открой приложение через кнопку в чате!');
+                registerBtn.disabled = false;
+                registerBtn.innerHTML = '🚀 Войти в маркет';
                 return;
             }
             
             // Подготавливаем данные
             const userData = {
                 nickname: login,
+                action: 'register',
                 user_id: tg.initDataUnsafe?.user?.id || 0,
                 timestamp: Date.now()
             };
             
             try {
-                // Отправляем данные боту
+                // Отправляем данные боту (это закроет WebApp, но мы покажем успех)
                 tg.sendData(JSON.stringify(userData));
                 
-                // Показываем успех
+                // Показываем экран успеха
                 document.getElementById('registerCard').style.display = 'none';
                 document.getElementById('successCard').classList.add('show');
+                document.getElementById('successText').innerHTML = `Никнейм <b>${login}</b> отправлен!`;
                 
-                // Закрываем через 2 секунды
-                setTimeout(() => tg.close(), 2000);
+                // Сохраняем никнейм
+                localStorage.setItem('userNickname', login);
+                
+                // Через 3 секунды покажем маркет (если WebApp еще открыт)
+                setTimeout(() => {
+                    if (window.Telegram.WebApp.isExpanded) {
+                        showMarket(login);
+                    }
+                }, 3000);
                 
             } catch (error) {
                 showWarning('❌ Ошибка отправки: ' + error.message);
+                registerBtn.disabled = false;
+                registerBtn.innerHTML = '🚀 Войти в маркет';
             }
         }
         
-        // Обработка нажатия Enter в поле ввода
+        // Функция показа маркета
+        function showMarket(nickname) {
+            document.getElementById('successCard').classList.remove('show');
+            document.getElementById('marketCard').classList.remove('hidden');
+            document.getElementById('displayNickname').textContent = nickname;
+            
+            // Настраиваем кнопку в Telegram
+            tg.MainButton.setText('Закрыть');
+            tg.MainButton.onClick(() => tg.close());
+            tg.MainButton.show();
+        }
+        
+        // Проверяем, есть ли сохраненный никнейм
+        window.onload = function() {
+            const savedNickname = localStorage.getItem('userNickname');
+            if (savedNickname) {
+                document.getElementById('login').value = savedNickname;
+            }
+            
+            // Если пользователь уже залогинен (можно проверить через бота)
+            // Но пока просто оставляем на экране регистрации
+        };
+        
+        // Обработка нажатия Enter
         document.getElementById('login').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 handleAuth();
             }
         });
         
-        // Получаем информацию о пользователе из Telegram
+        // Получаем информацию о пользователе
         const user = tg.initDataUnsafe?.user;
         if (user?.first_name) {
-            document.getElementById('login').placeholder = user.first_name;
+            const loginInput = document.getElementById('login');
+            if (!loginInput.value) {
+                loginInput.placeholder = user.first_name;
+            }
         }
         
-        console.log('Web App загружен, версия Telegram:', tg.version);
+        console.log('✅ Web App загружен');
     </script>
 </body>
 </html>
