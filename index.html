@@ -83,38 +83,50 @@
 <!-- Исправленный путь к скрипту -->
 <script src="https://telegram.org"></script>
 
+<script src="https://telegram.org"></script>
 <script>
+    // Инициализация Telegram WebApp
     const tg = window.Telegram.WebApp;
     tg.ready();
-    tg.expand();
+    tg.expand(); // Развернуть на весь экран
 
     function handleAuth() {
+        // Получаем значения из полей
         const login = document.getElementById("login").value.trim();
         const p1 = document.getElementById("pass1").value;
         const p2 = document.getElementById("pass2").value;
 
+        // 1. Простая валидация
         if (login.length < 3) {
-            tg.showPopup({ message: "Логин слишком короткий!" });
+            tg.showAlert("Логин слишком короткий!");
+            return;
+        }
+        if (p1.length < 4) {
+            tg.showAlert("Пароль должен быть минимум 4 символа!");
             return;
         }
         if (p1 !== p2) {
-            tg.showPopup({ message: "Пароли не совпадают!" });
+            tg.showAlert("Пароли не совпадают!");
             return;
         }
 
+        // 2. Подготовка данных для отправки
         const data = JSON.stringify({ 
             nickname: login,
             status: "registered" 
         });
 
-        // sendData работает ТОЛЬКО если Mini App открыт через KeyboardButton
+        // 3. Отправка данных боту
+        // ВНИМАНИЕ: sendData работает ТОЛЬКО если Mini App открыт 
+        // через кнопку КЛАВИАТУРЫ (внизу), а не через кнопку МЕНЮ (слева).
         if (tg.sendData) {
             tg.sendData(data);
+            tg.close();
         } else {
-            alert("Используйте кнопку 'Открыть Market 🚀' в меню бота");
+            // Если открыто через кнопку МЕНЮ (слева)
+            tg.showAlert("Регистрация через это меню пока недоступна. Используйте кнопку 'Открыть Market 🚀' в чате!");
         }
     }
 </script>
-
 </body>
 </html>
