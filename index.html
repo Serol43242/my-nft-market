@@ -19,71 +19,262 @@
             color: #fff;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             min-height: 100vh;
-            padding: 20px;
         }
         
-        .container {
-            max-width: 400px;
-            margin: 0 auto;
-        }
-        
-        .card {
-            background: rgba(30, 35, 50, 0.9);
+        /* Навигация */
+        .navbar {
+            background: rgba(20, 25, 40, 0.95);
             backdrop-filter: blur(10px);
-            border-radius: 32px;
-            padding: 30px 25px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-            margin-bottom: 20px;
-        }
-        
-        .logo {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        
-        .logo-icon {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, #0088cc, #00aaff);
-            border-radius: 24px;
+            padding: 15px 20px;
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
-            margin: 0 auto 15px;
-            font-size: 40px;
-            font-weight: bold;
-            color: white;
-            box-shadow: 0 10px 20px rgba(0, 136, 204, 0.3);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
         
-        h1 {
-            font-size: 28px;
-            margin-bottom: 5px;
-            background: linear-gradient(135deg, #fff, #aaccff);
+        .nav-logo {
+            font-size: 20px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #0088cc, #00aaff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
         
-        .subtitle {
+        .nav-balance {
+            background: rgba(0, 136, 204, 0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            border: 1px solid rgba(0, 136, 204, 0.3);
+        }
+        
+        .nav-menu {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .nav-item {
             color: #8899bb;
+            cursor: pointer;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+        
+        .nav-item.active {
+            color: #0088cc;
+        }
+        
+        .nav-item:hover {
+            color: #00aaff;
+        }
+        
+        /* Контейнер */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Сетка NFT карточек */
+        .nft-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        /* Карточка NFT */
+        .nft-card {
+            background: rgba(30, 35, 50, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .nft-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 136, 204, 0.2);
+            border-color: #0088cc;
+        }
+        
+        .nft-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #2a2f3f, #1a1f2f);
+            border-radius: 16px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .nft-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .nft-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            color: #ffaa00;
+            border: 1px solid #ffaa00;
+        }
+        
+        .nft-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .nft-creator {
+            color: #8899bb;
+            font-size: 13px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .nft-price {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .price-tag {
+            font-size: 20px;
+            font-weight: bold;
+            color: #00aaff;
+        }
+        
+        .price-currency {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .currency-badge {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 11px;
+            color: #8899bb;
+        }
+        
+        .nft-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn-buy {
+            flex: 1;
+            padding: 12px;
+            background: linear-gradient(135deg, #0088cc, #00aaff);
+            border: none;
+            border-radius: 16px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-buy:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(0, 136, 204, 0.4);
+        }
+        
+        .btn-sell {
+            flex: 1;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-sell:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        /* Модальное окно */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .modal.show {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: rgba(30, 35, 50, 0.95);
+            border-radius: 32px;
+            padding: 30px;
+            max-width: 500px;
+            width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 20px;
+        }
+        
+        .modal-close {
+            font-size: 24px;
+            cursor: pointer;
+            color: #8899bb;
+        }
+        
+        .modal-close:hover {
+            color: #ff5555;
+        }
+        
+        /* Формы */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #aabbdd;
             font-size: 14px;
         }
         
-        .input-group {
-            margin-bottom: 16px;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 6px;
-            color: #aabbdd;
-            font-size: 13px;
-            font-weight: 500;
-        }
-        
-        input {
+        .form-input {
             width: 100%;
             padding: 14px 16px;
             background: rgba(20, 25, 40, 0.8);
@@ -91,598 +282,764 @@
             border-radius: 16px;
             color: white;
             font-size: 15px;
-            transition: all 0.3s;
         }
         
-        input:focus {
+        .form-input:focus {
             outline: none;
             border-color: #0088cc;
-            background: rgba(30, 35, 50, 0.9);
         }
         
-        input::placeholder {
-            color: #556677;
-        }
-        
-        .random-nick {
-            font-size: 12px;
-            color: #0088cc;
-            margin-top: 5px;
-            cursor: pointer;
-            display: inline-block;
-        }
-        
-        .random-nick:hover {
-            text-decoration: underline;
-        }
-        
-        .password-requirements {
-            font-size: 12px;
-            color: #8899bb;
-            margin-top: 6px;
-            padding-left: 10px;
-        }
-        
-        .password-requirements span {
-            display: inline-block;
-            margin-right: 15px;
-        }
-        
-        .requirement-met {
-            color: #00cc88;
-        }
-        
-        .btn-primary {
+        .form-select {
             width: 100%;
-            padding: 16px;
-            background: linear-gradient(135deg, #0088cc, #00aaff);
-            border: none;
-            border-radius: 18px;
+            padding: 14px 16px;
+            background: rgba(20, 25, 40, 0.8);
+            border: 2px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
             color: white;
-            font-size: 18px;
-            font-weight: bold;
+            font-size: 15px;
+            cursor: pointer;
+        }
+        
+        .currency-selector {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .currency-option {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 10px 5px;
+            text-align: center;
             cursor: pointer;
             transition: all 0.3s;
-            box-shadow: 0 5px 15px rgba(0, 136, 204, 0.3);
-            margin: 20px 0 12px 0;
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0, 136, 204, 0.4);
-        }
-        
-        .btn-primary:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-        
-        .features {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            text-align: center;
-            margin-top: 25px;
-        }
-        
-        .feature {
-            padding: 12px 5px;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 14px;
             font-size: 12px;
-            color: #99aacc;
         }
         
-        .feature span {
-            display: block;
-            font-size: 20px;
-            margin-bottom: 5px;
+        .currency-option.selected {
+            background: #0088cc;
+            border-color: #00aaff;
         }
         
-        .warning {
-            margin-top: 15px;
-            padding: 12px;
-            background: rgba(255, 100, 100, 0.1);
-            border: 1px solid rgba(255, 100, 100, 0.2);
-            border-radius: 12px;
-            color: #ffaaaa;
-            font-size: 13px;
-            text-align: center;
-            display: none;
+        .currency-option:hover {
+            background: rgba(0, 136, 204, 0.3);
         }
         
-        .warning.show {
-            display: block;
+        /* Профиль */
+        .profile-header {
+            background: rgba(30, 35, 50, 0.9);
+            border-radius: 24px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
-        .success-message {
-            text-align: center;
-            padding: 30px 20px;
-            display: none;
+        .profile-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
         }
         
-        .success-message.show {
-            display: block;
-        }
-        
-        .checkmark {
-            width: 70px;
-            height: 70px;
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #0088cc, #00aaff);
             border-radius: 50%;
-            background: #00cc88;
-            margin: 0 auto 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 35px;
-            color: white;
-            animation: scaleIn 0.5s ease;
+            font-size: 40px;
         }
         
-        @keyframes scaleIn {
-            0% { transform: scale(0); }
-            70% { transform: scale(1.1); }
-            100% { transform: scale(1); }
+        .profile-details {
+            flex: 1;
         }
         
-        .success-text {
+        .profile-name {
             font-size: 24px;
             font-weight: bold;
-            margin-bottom: 10px;
-            color: #00cc88;
+            margin-bottom: 5px;
         }
         
-        .success-subtext {
-            color: #aabbdd;
+        .profile-stats {
+            display: flex;
+            gap: 30px;
+            margin-top: 15px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #00aaff;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #8899bb;
+        }
+        
+        /* Балансы валют */
+        .balances {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
             margin-bottom: 30px;
         }
         
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,.3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
-            margin-right: 10px;
-            vertical-align: middle;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        .hidden {
-            display: none;
-        }
-        
-        .divider {
-            display: flex;
-            align-items: center;
+        .balance-card {
+            background: rgba(30, 35, 50, 0.9);
+            border-radius: 20px;
+            padding: 20px;
             text-align: center;
-            color: #556677;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .balance-icon {
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+        
+        .balance-amount {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .balance-label {
+            color: #8899bb;
             font-size: 12px;
-            margin: 15px 0;
         }
         
-        .divider::before,
-        .divider::after {
-            content: '';
-            flex: 1;
-            border-bottom: 1px solid #334455;
+        /* Уведомления */
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(30, 35, 50, 0.95);
+            border-left: 4px solid #00cc88;
+            border-radius: 12px;
+            padding: 15px 20px;
+            color: white;
+            z-index: 2000;
+            transform: translateX(400px);
+            transition: transform 0.3s;
         }
         
-        .divider::before {
-            margin-right: 10px;
+        .notification.show {
+            transform: translateX(0);
         }
         
-        .divider::after {
-            margin-left: 10px;
+        .notification.error {
+            border-left-color: #ff5555;
         }
         
-        .password-strength {
-            height: 4px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 2px;
-            margin-top: 8px;
-            overflow: hidden;
+        .notification.warning {
+            border-left-color: #ffaa00;
         }
         
-        .password-strength-bar {
-            height: 100%;
-            width: 0;
-            transition: width 0.3s, background-color 0.3s;
+        /* Инструкция по продаже */
+        .sell-instruction {
+            background: rgba(0, 136, 204, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 1px solid rgba(0, 136, 204, 0.3);
         }
         
-        .strength-weak {
-            background: #ff5555;
-            width: 33%;
+        .admin-username {
+            background: #0088cc;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 12px;
+            display: inline-block;
+            font-weight: bold;
+            margin: 10px 0;
+            cursor: pointer;
         }
         
-        .strength-medium {
-            background: #ffaa00;
-            width: 66%;
+        .admin-username:hover {
+            background: #00aaff;
         }
         
-        .strength-strong {
-            background: #00cc88;
-            width: 100%;
+        /* Пагинация */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 30px;
+        }
+        
+        .page-btn {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .page-btn.active {
+            background: #0088cc;
+            border-color: #00aaff;
+        }
+        
+        .page-btn:hover {
+            background: rgba(0, 136, 204, 0.3);
         }
     </style>
 </head>
 <body>
+    <!-- Навигация -->
+    <div class="navbar">
+        <div class="nav-logo">🎨 OrbitTon</div>
+        <div class="nav-menu">
+            <span class="nav-item active" onclick="showSection('market')">Маркет</span>
+            <span class="nav-item" onclick="showSection('my-nfts')">Мои NFT</span>
+            <span class="nav-item" onclick="showSection('profile')">Профиль</span>
+        </div>
+        <div class="nav-balance" onclick="showSection('balance')">
+            💰 Баланс: <span id="totalBalance">0</span>
+        </div>
+    </div>
+
     <div class="container">
-        <!-- Карточка регистрации -->
-        <div class="card" id="registerCard">
-            <div class="logo">
-                <div class="logo-icon">🎨</div>
-                <h1>OrbitTon</h1>
-                <div class="subtitle">Создай аккаунт в NFT маркете</div>
+        <!-- Секция Маркета -->
+        <div id="marketSection" style="display: block;">
+            <h2 style="margin-bottom: 10px;">🔥 NFT Маркет</h2>
+            <p style="color: #8899bb; margin-bottom: 20px;">Покупай и продавай NFT в разных валютах</p>
+            
+            <!-- Фильтры -->
+            <div style="display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap;">
+                <select class="form-select" style="width: auto; min-width: 150px;" id="currencyFilter" onchange="filterNFTs()">
+                    <option value="all">Все валюты</option>
+                    <option value="TON">TON</option>
+                    <option value="STARS">Звезды</option>
+                    <option value="RUB">Рубли</option>
+                    <option value="UAH">Гривны</option>
+                    <option value="BONUS">Буны</option>
+                </select>
+                
+                <select class="form-select" style="width: auto; min-width: 150px;" id="sortFilter" onchange="filterNFTs()">
+                    <option value="newest">Сначала новые</option>
+                    <option value="priceAsc">Цена (по возрастанию)</option>
+                    <option value="priceDesc">Цена (по убыванию)</option>
+                </select>
             </div>
             
-            <!-- Поля для ввода -->
-            <div class="input-group">
-                <label>👤 Никнейм</label>
-                <input type="text" id="login" placeholder="Например: CryptoKing" maxlength="20" autocomplete="off">
-                <div class="random-nick" onclick="generateRandomNick()">🎲 Случайный ник</div>
-            </div>
+            <!-- Сетка NFT -->
+            <div class="nft-grid" id="nftGrid"></div>
             
-            <div class="input-group">
-                <label>🔐 Пароль</label>
-                <input type="password" id="password" placeholder="••••••••" maxlength="30" oninput="checkPasswordStrength()">
-                <div class="password-strength">
-                    <div class="password-strength-bar" id="strengthBar"></div>
-                </div>
-            </div>
+            <!-- Пагинация -->
+            <div class="pagination" id="pagination"></div>
+        </div>
+        
+        <!-- Секция Мои NFT -->
+        <div id="myNftsSection" style="display: none;">
+            <h2 style="margin-bottom: 10px;">🖼️ Мои NFT</h2>
+            <p style="color: #8899bb; margin-bottom: 20px;">Здесь отображаются твои NFT</p>
             
-            <div class="input-group">
-                <label>✓ Подтвердите пароль</label>
-                <input type="password" id="confirmPassword" placeholder="••••••••" maxlength="30">
-            </div>
-            
-            <div class="password-requirements">
-                <span id="reqLength">🔴 минимум 6 символов</span>
-                <span id="reqMatch">🔴 пароли совпадают</span>
-            </div>
-            
-            <button class="btn-primary" id="registerBtn" onclick="handleAuth()">
-                📝 Зарегистрироваться
+            <!-- Кнопка продажи -->
+            <button class="btn-primary" style="width: auto; padding: 12px 25px; margin-bottom: 20px;" onclick="openSellModal()">
+                📤 Выставить NFT на продажу
             </button>
             
-            <div class="divider">уже есть аккаунт?</div>
-            
-            <div style="text-align: center;">
-                <span style="color: #0088cc; font-size: 14px; cursor: pointer;" onclick="simulateLogin()">
-                    🔑 Войти (демо)
-                </span>
+            <!-- Инструкция по продаже -->
+            <div class="sell-instruction">
+                <div style="font-size: 18px; font-weight: bold; margin-bottom: 10px;">📋 Как продать NFT?</div>
+                <p style="color: #8899bb; margin-bottom: 15px;">Чтобы выставить NFT на продажу:</p>
+                <ol style="color: #aabbdd; margin-left: 20px; margin-bottom: 15px;">
+                    <li>Передай подарок (NFT) на аккаунт администратора</li>
+                    <li>Админ проверит и добавит NFT в маркет</li>
+                    <li>Ты получишь уведомление</li>
+                </ol>
+                <div class="admin-username" onclick="copyAdminUsername()" id="adminUsername">📋 @OrbitTonAdmin</div>
+                <p style="color: #8899bb; font-size: 12px; margin-top: 10px;">Нажми на username чтобы скопировать</p>
             </div>
             
-            <div class="features">
-                <div class="feature"><span>🛡️</span>Безопасно</div>
-                <div class="feature"><span>⚡</span>Мгновенно</div>
-                <div class="feature"><span>💎</span>NFT</div>
-            </div>
-            
-            <div class="warning" id="warning"></div>
+            <!-- Мои NFT сетка -->
+            <div class="nft-grid" id="myNftsGrid"></div>
         </div>
         
-        <!-- Карточка успеха (показывается после отправки) -->
-        <div class="card success-message" id="successCard">
-            <div class="checkmark">✓</div>
-            <div class="success-text">Успешно!</div>
-            <div class="success-subtext" id="successText">Аккаунт создан</div>
-            <div style="margin-top: 20px; color: #8899bb; font-size: 14px;">
-                <span class="loading"></span> Перенаправляем в маркет...
-            </div>
-        </div>
-        
-        <!-- Карточка маркета (появится после регистрации) -->
-        <div class="card hidden" id="marketCard">
-            <div style="text-align: center; margin-bottom: 20px;">
-                <span style="font-size: 50px;">🖼️</span>
-                <h2 style="margin: 10px 0;">NFT Маркет</h2>
-                <p style="color: #8899bb;">Добро пожаловать!</p>
-            </div>
-            
-            <div style="background: rgba(0,136,204,0.1); border-radius: 16px; padding: 15px; margin-bottom: 15px;">
-                <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                    <span style="font-size: 24px; margin-right: 10px;">👤</span>
-                    <div>
-                        <div style="font-size: 12px; color: #8899bb;">Твой ник</div>
-                        <div style="font-weight: bold;" id="displayNickname">Загрузка...</div>
-                    </div>
-                </div>
-                <div style="display: flex; align-items: center;">
-                    <span style="font-size: 24px; margin-right: 10px;">🔐</span>
-                    <div>
-                        <div style="font-size: 12px; color: #8899bb;">Статус</div>
-                        <div style="font-weight: bold; color: #00cc88;">Аккаунт защищен</div>
+        <!-- Секция Профиля -->
+        <div id="profileSection" style="display: none;">
+            <div class="profile-header">
+                <div class="profile-info">
+                    <div class="profile-avatar" id="profileAvatar">👤</div>
+                    <div class="profile-details">
+                        <div class="profile-name" id="profileName">Загрузка...</div>
+                        <div style="color: #8899bb;" id="profileUsername"></div>
+                        <div class="profile-stats">
+                            <div class="stat-item">
+                                <div class="stat-value" id="profileNftCount">0</div>
+                                <div class="stat-label">NFT</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="profileSalesCount">0</div>
+                                <div class="stat-label">Продаж</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="profilePurchasesCount">0</div>
+                                <div class="stat-label">Покупок</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
             
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
-                <div style="background: rgba(255,255,255,0.05); border-radius: 16px; padding: 15px; text-align: center;">
-                    <span style="font-size: 24px;">💰</span>
-                    <div style="font-size: 12px; color: #8899bb;">Баланс</div>
-                    <div style="font-weight: bold;">0 TON</div>
-                </div>
-                <div style="background: rgba(255,255,255,0.05); border-radius: 16px; padding: 15px; text-align: center;">
-                    <span style="font-size: 24px;">🖼️</span>
-                    <div style="font-size: 12px; color: #8899bb;">NFT</div>
-                    <div style="font-weight: bold;">0</div>
-                </div>
-            </div>
+            <!-- Балансы валют -->
+            <h3 style="margin-bottom: 15px;">💰 Мои балансы</h3>
+            <div class="balances" id="balancesContainer"></div>
             
-            <div style="display: flex; gap: 10px;">
-                <button class="btn-primary" style="flex: 1; margin: 0;" onclick="window.Telegram.WebApp.close()">
-                    ✖️ Закрыть
-                </button>
-                <button style="flex: 1; padding: 16px; background: rgba(255,255,255,0.1); border: none; border-radius: 18px; color: white; cursor: pointer;" onclick="logout()">
-                    🚪 Выйти
-                </button>
+            <!-- История транзакций -->
+            <h3 style="margin-bottom: 15px; margin-top: 30px;">📜 История</h3>
+            <div style="background: rgba(30, 35, 50, 0.9); border-radius: 24px; padding: 20px;">
+                <div id="transactionHistory">Загрузка...</div>
             </div>
         </div>
     </div>
 
+    <!-- Модальное окно покупки -->
+    <div class="modal" id="buyModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Покупка NFT</h2>
+                <span class="modal-close" onclick="closeModal('buyModal')">✖</span>
+            </div>
+            <div id="buyModalContent"></div>
+        </div>
+    </div>
+
+    <!-- Модальное окно продажи -->
+    <div class="modal" id="sellModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Выставить NFT</h2>
+                <span class="modal-close" onclick="closeModal('sellModal')">✖</span>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Название NFT</label>
+                <input type="text" class="form-input" id="sellNftName" placeholder="Например: Cosmic Cat #1">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Описание</label>
+                <input type="text" class="form-input" id="sellNftDescription" placeholder="Краткое описание">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Цена</label>
+                <input type="number" class="form-input" id="sellNftPrice" placeholder="0" min="0" step="0.01">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Валюта</label>
+                <div class="currency-selector" id="currencySelector">
+                    <div class="currency-option" data-currency="TON" onclick="selectCurrency('TON')">TON</div>
+                    <div class="currency-option" data-currency="STARS" onclick="selectCurrency('STARS')">⭐ Звезды</div>
+                    <div class="currency-option" data-currency="RUB" onclick="selectCurrency('RUB')">₽ Рубли</div>
+                    <div class="currency-option" data-currency="UAH" onclick="selectCurrency('UAH')">₴ Гривны</div>
+                    <div class="currency-option" data-currency="BONUS" onclick="selectCurrency('BONUS')">🎮 Буны</div>
+                </div>
+            </div>
+            
+            <div class="sell-instruction" style="margin-top: 0;">
+                <p style="color: #ffaa00;">⚠️ Важно:</p>
+                <p style="color: #8899bb; font-size: 14px;">После создания заявки передай NFT администратору @OrbitTonAdmin</p>
+            </div>
+            
+            <button class="btn-primary" onclick="createSellRequest()">
+                📤 Создать заявку
+            </button>
+        </div>
+    </div>
+
+    <!-- Уведомление -->
+    <div class="notification" id="notification"></div>
+
     <script>
         // Инициализация Telegram Web App
         const tg = window.Telegram.WebApp;
-        
-        // Говорим Telegram, что приложение готово
         tg.ready();
-        
-        // Растягиваем на весь экран
         tg.expand();
-        
-        // Настраиваем цвета
         tg.setHeaderColor('#0a0f1e');
         tg.setBackgroundColor('#0a0f1e');
-        
-        // Переменные
-        let isRegistered = false;
-        
-        // Массив для генерации случайных ников
-        const nickPrefixes = ['Crypto', 'NFT', 'Meta', 'Cyber', 'Digital', 'Virtual', 'Pixel', 'Block', 'Chain', 'Token'];
-        const nickSuffixes = ['King', 'Queen', 'Lord', 'Master', 'Guru', 'Hunter', 'Whale', 'Diamond', 'Platinum', 'Gold'];
-        const nickNumbers = ['', '123', '777', '000', '420', '69', '1337', '2024', '2025', '2026'];
-        
-        // Функция генерации случайного ника
-        function generateRandomNick() {
-            const prefix = nickPrefixes[Math.floor(Math.random() * nickPrefixes.length)];
-            const suffix = nickSuffixes[Math.floor(Math.random() * nickSuffixes.length)];
-            const number = nickNumbers[Math.floor(Math.random() * nickNumbers.length)];
-            
-            let randomNick = prefix + suffix;
-            if (number && Math.random() > 0.5) {
-                randomNick += number;
-            }
-            
-            document.getElementById('login').value = randomNick;
-        }
-        
-        // Генерируем случайный ник при загрузке страницы
-        window.onload = function() {
-            generateRandomNick();
-            
-            // Очищаем поля паролей
-            document.getElementById('password').value = '';
-            document.getElementById('confirmPassword').value = '';
+
+        // Данные пользователя
+        let currentUser = {
+            nickname: localStorage.getItem('userNickname') || 'CryptoKing',
+            id: tg.initDataUnsafe?.user?.id || Math.floor(Math.random() * 1000000),
+            nfts: [],
+            balance: {
+                TON: 100,
+                STARS: 500,
+                RUB: 5000,
+                UAH: 2000,
+                BONUS: 1000
+            },
+            transactions: []
         };
-        
-        // Функция проверки сложности пароля (только визуально)
-        function checkPasswordStrength() {
-            const password = document.getElementById('password').value;
-            const strengthBar = document.getElementById('strengthBar');
-            
-            // Убираем все классы
-            strengthBar.className = 'password-strength-bar';
-            
-            if (password.length === 0) {
-                strengthBar.style.width = '0';
-                return;
+
+        // База данных NFT (20 штук для примера)
+        let nftDatabase = [
+            {
+                id: 1,
+                title: "Cosmic Cat #1",
+                creator: "CryptoArtist",
+                image: "🐱",
+                price: 50,
+                currency: "TON",
+                description: "Космический кот в скафандре",
+                rarity: "legendary",
+                type: "image"
+            },
+            {
+                id: 2,
+                title: "Pixel Punk #042",
+                creator: "PixelMaster",
+                image: "👾",
+                price: 150,
+                currency: "STARS",
+                description: "Редкий пиксельный панк",
+                rarity: "epic",
+                type: "image"
+            },
+            {
+                id: 3,
+                title: "Dragon Egg",
+                creator: "FantasyArt",
+                image: "🥚",
+                price: 3000,
+                currency: "RUB",
+                description: "Яйцо дракона с магией",
+                rarity: "mythic",
+                type: "image"
+            },
+            {
+                id: 4,
+                title: "Neon Samurai",
+                creator: "CyberWave",
+                image: "⚔️",
+                price: 1200,
+                currency: "UAH",
+                description: "Самурай в неоновом свете",
+                rarity: "rare",
+                type: "image"
+            },
+            {
+                id: 5,
+                title: "Game Pass Elite",
+                creator: "GameStudio",
+                image: "🎮",
+                price: 200,
+                currency: "BONUS",
+                description: "Премиум доступ к играм",
+                rarity: "epic",
+                type: "pass"
+            },
+            {
+                id: 6,
+                title: "Crypto Punk #777",
+                creator: "PunkLabs",
+                image: "👨‍🎤",
+                price: 75,
+                currency: "TON",
+                description: "Классический крипто-панк",
+                rarity: "rare",
+                type: "image"
+            },
+            {
+                id: 7,
+                title: "Golden Key",
+                creator: "MysteryBox",
+                image: "🔑",
+                price: 300,
+                currency: "STARS",
+                description: "Открывает секретные кейсы",
+                rarity: "legendary",
+                type: "key"
+            },
+            {
+                id: 8,
+                title: "Space Ship",
+                creator: "NFT Space",
+                image: "🚀",
+                price: 5000,
+                currency: "RUB",
+                description: "Космический корабль для метавселенной",
+                rarity: "mythic",
+                type: "vehicle"
+            },
+            {
+                id: 9,
+                title: "Magic Sword",
+                creator: "FantasyNFT",
+                image: "🗡️",
+                price: 800,
+                currency: "UAH",
+                description: "Меч с магическими свойствами",
+                rarity: "epic",
+                type: "weapon"
+            },
+            {
+                id: 10,
+                title: "Gaming Chair",
+                creator: "GameGear",
+                image: "🪑",
+                price: 150,
+                currency: "BONUS",
+                description: "Крутое геймерское кресло",
+                rarity: "rare",
+                type: "item"
+            },
+            {
+                id: 11,
+                title: "Alien Artifact",
+                creator: "XenoArt",
+                image: "👽",
+                price: 120,
+                currency: "TON",
+                description: "Инопланетный артефакт",
+                rarity: "legendary",
+                type: "artifact"
+            },
+            {
+                id: 12,
+                title: "Neural Helmet",
+                creator: "CyberTech",
+                image: "🧠",
+                price: 450,
+                currency: "STARS",
+                description: "Шлем для нейроинтерфейса",
+                rarity: "epic",
+                type: "gear"
+            },
+            {
+                id: 13,
+                title: "Diamond Card",
+                creator: "VIP Club",
+                image: "💎",
+                price: 15000,
+                currency: "RUB",
+                description: "VIP карта с алмазами",
+                rarity: "mythic",
+                type: "card"
+            },
+            {
+                id: 14,
+                title: "Cossack NFT",
+                creator: "UkrainianArt",
+                image: "⚔️",
+                price: 2500,
+                currency: "UAH",
+                description: "Украинский казак NFT",
+                rarity: "epic",
+                type: "art"
+            },
+            {
+                id: 15,
+                title: "Game Developer",
+                creator: "DevTeam",
+                image: "👨‍💻",
+                price: 300,
+                currency: "BONUS",
+                description: "Разработчик в мире GameFi",
+                rarity: "rare",
+                type: "character"
+            },
+            {
+                id: 16,
+                title: "Moon Base",
+                creator: "SpaceX NFT",
+                image: "🌕",
+                price: 200,
+                currency: "TON",
+                description: "База на Луне",
+                rarity: "legendary",
+                type: "land"
+            },
+            {
+                id: 17,
+                title: "Laser Eyes",
+                creator: "EyeArt",
+                image: "👀",
+                price: 80,
+                currency: "STARS",
+                description: "Лазерные глаза для аватара",
+                rarity: "common",
+                type: "effect"
+            },
+            {
+                id: 18,
+                title: "Bear Market",
+                creator: "CryptoArt",
+                image: "🐻",
+                price: 1000,
+                currency: "RUB",
+                description: "Медведь на крипторынке",
+                rarity: "rare",
+                type: "meme"
+            },
+            {
+                id: 19,
+                title: "Bandura",
+                creator: "MusicNFT",
+                image: "🎵",
+                price: 600,
+                currency: "UAH",
+                description: "Украинская бандура NFT",
+                rarity: "epic",
+                type: "music"
+            },
+            {
+                id: 20,
+                title: "Boost Pack",
+                creator: "GameBoost",
+                image: "⚡",
+                price: 50,
+                currency: "BONUS",
+                description: "Ускоритель для игр",
+                rarity: "common",
+                type: "boost"
             }
-            
-            // Оцениваем сложность (только для красоты)
-            if (password.length < 4) {
-                strengthBar.classList.add('strength-weak');
-            } else if (password.length < 8) {
-                strengthBar.classList.add('strength-medium');
-            } else {
-                strengthBar.classList.add('strength-strong');
-            }
-            
-            // Обновляем требования
-            updateRequirements();
-        }
-        
-        // Функция обновления требований к паролю (визуально)
-        function updateRequirements() {
-            const password = document.getElementById('password').value;
-            const confirm = document.getElementById('confirmPassword').value;
-            
-            const reqLength = document.getElementById('reqLength');
-            const reqMatch = document.getElementById('reqMatch');
-            
-            // Проверка длины
-            if (password.length >= 6) {
-                reqLength.innerHTML = '✅ минимум 6 символов';
-                reqLength.style.color = '#00cc88';
-            } else {
-                reqLength.innerHTML = '🔴 минимум 6 символов';
-                reqLength.style.color = '#ffaaaa';
-            }
-            
-            // Проверка совпадения
-            if (confirm.length > 0 && password === confirm) {
-                reqMatch.innerHTML = '✅ пароли совпадают';
-                reqMatch.style.color = '#00cc88';
-            } else if (confirm.length > 0) {
-                reqMatch.innerHTML = '🔴 пароли совпадают';
-                reqMatch.style.color = '#ffaaaa';
-            } else {
-                reqMatch.innerHTML = '⚪ пароли совпадают';
-                reqMatch.style.color = '#8899bb';
-            }
-        }
-        
-        // Следим за вводом пароля
-        document.getElementById('password').addEventListener('input', updateRequirements);
-        document.getElementById('confirmPassword').addEventListener('input', updateRequirements);
-        
-        // Функция показа предупреждения
-        function showWarning(message) {
-            const warning = document.getElementById('warning');
-            warning.textContent = message;
-            warning.classList.add('show');
-            setTimeout(() => warning.classList.remove('show'), 3000);
-        }
-        
-        // Функция для демо-входа (просто показывает маркет без регистрации)
-        function simulateLogin() {
-            const demoNickname = document.getElementById('login').value || "CryptoGuest";
-            document.getElementById('registerCard').style.display = 'none';
-            document.getElementById('marketCard').classList.remove('hidden');
-            document.getElementById('displayNickname').textContent = demoNickname;
-            
-            tg.MainButton.setText('Закрыть');
-            tg.MainButton.onClick(() => tg.close());
-            tg.MainButton.show();
-        }
-        
-        // Функция обработки регистрации
-        function handleAuth() {
-            const loginInput = document.getElementById('login');
-            const passwordInput = document.getElementById('password');
-            const confirmInput = document.getElementById('confirmPassword');
-            
-            const login = loginInput.value.trim();
-            const password = passwordInput.value;
-            const confirm = confirmInput.value;
-            
-            const registerBtn = document.getElementById('registerBtn');
-            
-            // Валидация (только для красоты, данные не сохраняются)
-            if (login.length < 3) {
-                showWarning('⚠️ Никнейм должен содержать минимум 3 символа');
-                loginInput.focus();
-                return;
-            }
-            
-            if (login.length > 20) {
-                showWarning('⚠️ Никнейм слишком длинный (максимум 20 символов)');
-                loginInput.focus();
-                return;
-            }
-            
-            if (password.length < 6) {
-                showWarning('⚠️ Пароль должен быть минимум 6 символов');
-                passwordInput.focus();
-                return;
-            }
-            
-            if (password !== confirm) {
-                showWarning('⚠️ Пароли не совпадают');
-                confirmInput.focus();
-                return;
-            }
-            
-            // Блокируем кнопку на время отправки
-            registerBtn.disabled = true;
-            registerBtn.innerHTML = '<span class="loading"></span> Создаем аккаунт...';
-            
-            // Проверяем, можно ли отправлять данные
-            if (!tg.sendData) {
-                showWarning('❌ Ошибка: открой приложение через кнопку в чате!');
-                registerBtn.disabled = false;
-                registerBtn.innerHTML = '📝 Зарегистрироваться';
-                return;
-            }
-            
-            // Подготавливаем данные (отправляем только никнейм, пароль НЕ отправляем!)
-            const userData = {
-                nickname: login,
-                action: 'register',
-                user_id: tg.initDataUnsafe?.user?.id || 0,
-                timestamp: Date.now()
-                // Пароль НЕ отправляем в Telegram!
-            };
-            
-            try {
-                // Отправляем данные боту
-                tg.sendData(JSON.stringify(userData));
-                
-                // Показываем экран успеха
-                document.getElementById('registerCard').style.display = 'none';
-                document.getElementById('successCard').classList.add('show');
-                document.getElementById('successText').innerHTML = `Аккаунт <b>${login}</b> создан!`;
-                
-                // Сохраняем никнейм в localStorage (только для демо)
-                localStorage.setItem('userNickname', login);
-                
-                // Через 2 секунды покажем маркет
-                setTimeout(() => {
-                    if (window.Telegram.WebApp.isExpanded) {
-                        showMarket(login);
-                    }
-                }, 2000);
-                
-            } catch (error) {
-                showWarning('❌ Ошибка отправки: ' + error.message);
-                registerBtn.disabled = false;
-                registerBtn.innerHTML = '📝 Зарегистрироваться';
-            }
-        }
-        
-        // Функция показа маркета
-        function showMarket(nickname) {
-            document.getElementById('successCard').classList.remove('show');
-            document.getElementById('marketCard').classList.remove('hidden');
-            document.getElementById('displayNickname').textContent = nickname;
-            
-            // Настраиваем кнопку в Telegram
-            tg.MainButton.setText('Закрыть');
-            tg.MainButton.onClick(() => tg.close());
-            tg.MainButton.show();
-        }
-        
-        // Функция выхода
-        function logout() {
-            document.getElementById('marketCard').classList.add('hidden');
-            document.getElementById('registerCard').style.display = 'block';
-            document.getElementById('password').value = '';
-            document.getElementById('confirmPassword').value = '';
-            tg.MainButton.hide();
-            
-            // Генерируем новый случайный ник при выходе
+        ];
+
+        // Текущие фильтры
+        let currentFilter = {
+            currency: 'all',
+            sort: 'newest',
+            page: 1,
+            itemsPerPage: 8
+        };
+
+        // Инициализация
+        window.onload = function() {
+            loadUserData();
+            renderNFTs();
+            updateBalances();
+            updateProfile();
+            updateMyNFTs();
             generateRandomNick();
+            checkUrlParams();
+        };
+
+        // Загрузка данных пользователя
+        function loadUserData() {
+            const savedUser = localStorage.getItem('orbiton_user');
+            if (savedUser) {
+                try {
+                    const parsed = JSON.parse(savedUser);
+                    currentUser = {...currentUser, ...parsed};
+                } catch (e) {
+                    console.log('Ошибка загрузки данных');
+                }
+            }
+            
+            document.getElementById('profileName').textContent = currentUser.nickname;
+            document.getElementById('profileUsername').textContent = `@user_${currentUser.id}`;
         }
-        
-        // Обработка нажатия Enter
-        document.getElementById('login').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                document.getElementById('password').focus();
+
+        // Сохранение данных пользователя
+        function saveUserData() {
+            localStorage.setItem('orbiton_user', JSON.stringify(currentUser));
+        }
+
+        // Генерация случайного ника
+        function generateRandomNick() {
+            const prefixes = ['Crypto', 'NFT', 'Meta', 'Cyber', 'Digital', 'Pixel', 'Block', 'Token'];
+            const suffixes = ['King', 'Queen', 'Lord', 'Master', 'Guru', 'Hunter', 'Whale', 'Diamond'];
+            const numbers = ['123', '777', '000', '420', '69'];
+            
+            const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+            const suffix = suffixes[Math.floor(Math.random() * suffixes.length)];
+            const number = numbers[Math.floor(Math.random() * numbers.length)];
+            
+            let nick = prefix + suffix;
+            if (Math.random() > 0.5) {
+                nick += number;
             }
-        });
-        
-        document.getElementById('password').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                document.getElementById('confirmPassword').focus();
+            
+            currentUser.nickname = nick;
+            document.getElementById('profileName').textContent = nick;
+            saveUserData();
+        }
+
+        // Переключение секций
+        function showSection(section) {
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            document.getElementById('marketSection').style.display = 'none';
+            document.getElementById('myNftsSection').style.display = 'none';
+            document.getElementById('profileSection').style.display = 'none';
+            
+            if (section === 'market') {
+                document.getElementById('marketSection').style.display = 'block';
+                document.querySelector('.nav-item').classList.add('active');
+                renderNFTs();
+            } else if (section === 'my-nfts') {
+                document.getElementById('myNftsSection').style.display = 'block';
+                document.querySelectorAll('.nav-item')[1].classList.add('active');
+            } else if (section === 'profile') {
+                document.getElementById('profileSection').style.display = 'block';
+                document.querySelectorAll('.nav-item')[2].classList.add('active');
+                updateProfile();
             }
-        });
-        
-        document.getElementById('confirmPassword').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                handleAuth();
+        }
+
+        // Отрисовка NFT
+        function renderNFTs() {
+            const grid = document.getElementById('nftGrid');
+            let filteredNFTs = [...nftDatabase];
+            
+            // Фильтр по валюте
+            if (currentFilter.currency !== 'all') {
+                filteredNFTs = filteredNFTs.filter(nft => nft.currency === currentFilter.currency);
             }
-        });
-        
-        // Получаем информацию о пользователе
-        const user = tg.initDataUnsafe?.user;
-        
-        console.log('✅ Web App загружен с генерацией случайных ников');
-    </script>
-</body>
-</html>
+            
+            // Сортировка
+            if (currentFilter.sort === 'priceAsc') {
+                filteredNFTs.sort((a, b) => a.price - b.price);
+            } else if (currentFilter.sort === 'priceDesc') {
+                filteredNFTs.sort((a, b) => b.price - a.price);
+            } else {
+                filteredNFTs.sort((a, b) => b.id - a.id);
+            }
+            
+            // Пагинация
+            const start = (currentFilter.page - 1) * currentFilter.itemsPerPage;
+            const paginatedNFTs = filteredNFTs.slice(start, start + currentFilter.itemsPerPage);
+            
+            // Отрисовка
+            grid.innerHTML = paginatedNFTs.map(nft => `
+                <div class="nft-card" onclick="openBuyModal(${nft.id})">
+                    <div class="nft-image">
+                        ${nft.image}
+                        <span class="nft-badge">${nft.rarity}</span>
+                    </div>
+                    <div class="nft-title">${nft.title}</div>
+                    <div class="nft-creator">
+                        <span>👤</span> ${nft.creator}
+                    </div>
+                    <div class="nft-price">
+                        <span class="price-tag">${nft.price}</span>
+                        <div class="price-currency">
+                            <span class="currency-badge">${getCurrencySymbol(nft.currency)}</span>
+                        </div>
+                    </div>
+                    <div class="nft-actions">
+                        <button class="btn-buy" onclick="event.stopPropagation(); buyNFT(${nft.id})">
+                            Купить
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+            
+            //
