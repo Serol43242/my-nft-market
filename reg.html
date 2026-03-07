@@ -81,6 +81,10 @@
     </div>
 
 <script>
+    function handleAuth() {
+    alert("Кнопка нажата!"); // ДОБАВЬ ЭТУ СТРОКУ ДЛЯ ТЕСТА
+    const login = document.getElementById("login").value.trim();}
+    // ... остальной код
     const tg = window.Telegram.WebApp;
     tg.ready();
     tg.expand();
@@ -117,6 +121,7 @@
             alert("Ошибка: Запусти через кнопку в боте!");
         }
     }
+    
 </script>
 </body>
 </html>
