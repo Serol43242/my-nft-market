@@ -3,23 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>OrbitTon Registration</title>
+    <title>OrbitTon Market</title>
     
-    <!-- Правильный скрипт Telegram -->
-    <script src="main.py"></script>
+    <!-- ИСПРАВЛЕНО: Правильный путь к скрипту Telegram -->
+    <script src="https://telegram.org"></script>
     
     <style>
         body {
             background-color: #0f0f0f;
             color: white;
-            font-family: 'Segoe UI', sans-serif;
+            font-family: sans-serif;
             display: flex;
             align-items: center;
             justify-content: center;
             height: 100vh;
             margin: 0;
         }
-
         .card {
             background: #1a1a1a;
             padding: 25px;
@@ -29,14 +28,6 @@
             text-align: center;
             border: 1px solid #333;
         }
-
-        h2 { 
-            margin-bottom: 20px;
-            background: linear-gradient(45deg, #0088cc, #00eeff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
         input {
             width: 100%;
             padding: 12px;
@@ -46,12 +37,7 @@
             background: #222;
             color: white;
             box-sizing: border-box;
-            outline: none;
-            font-size: 14px;
         }
-
-        input:focus { border-color: #0088cc; }
-
         .btn-reg {
             background: linear-gradient(45deg, #0088cc, #00aaff);
             color: white;
@@ -61,70 +47,40 @@
             width: 100%;
             font-weight: bold;
             cursor: pointer;
-            margin-top: 10px;
         }
-
-        .btn-reg:active { transform: scale(0.97); }
     </style>
 </head>
 <body>
 
     <div class="card">
-        <h2>OrbitTon</h2>
-        <p style="color: #888; font-size: 13px;">Создание нового аккаунта</p>
-        
+        <h2 style="color: #00aaff;">OrbitTon</h2>
+        <p>Регистрация</p>
         <input type="text" id="login" placeholder="Придумайте логин">
-        <input type="password" id="pass1" placeholder="Пароль">
-        <input type="password" id="pass2" placeholder="Повторите пароль">
-        
         <button class="btn-reg" onclick="handleAuth()">Зарегистрироваться</button>
     </div>
 
-<!-- Исправленный путь к скрипту -->
-<script src="main.py"></script>
-
-<script src="main.py"></script>
 <script>
-    // Инициализация Telegram WebApp
     const tg = window.Telegram.WebApp;
     tg.ready();
-    tg.expand(); // Развернуть на весь экран
+    tg.expand();
 
     function handleAuth() {
-        // Получаем значения из полей
         const login = document.getElementById("login").value.trim();
-        const p1 = document.getElementById("pass1").value;
-        const p2 = document.getElementById("pass2").value;
 
-        // 1. Простая валидация
         if (login.length < 3) {
             tg.showAlert("Логин слишком короткий!");
             return;
         }
-        if (p1.length < 4) {
-            tg.showAlert("Пароль должен быть минимум 4 символа!");
-            return;
-        }
-        if (p1 !== p2) {
-            tg.showAlert("Пароли не совпадают!");
-            return;
-        }
 
-        // 2. Подготовка данных для отправки
         const data = JSON.stringify({ 
-            nickname: login,
-            status: "registered" 
+            nickname: login 
         });
 
-        // 3. Отправка данных боту
-        // ВНИМАНИЕ: sendData работает ТОЛЬКО если Mini App открыт 
-        // через кнопку КЛАВИАТУРЫ (внизу), а не через кнопку МЕНЮ (слева).
+        // ПРОВЕРКА: sendData работает только при открытии через Reply-кнопку
         if (tg.sendData) {
-            tg.sendData(data);
-            tg.close();
+            tg.sendData(data); // Отправляет данные боту и закрывает окно
         } else {
-            // Если открыто через кнопку МЕНЮ (слева)
-            tg.showAlert("Регистрация через это меню пока недоступна. Используйте кнопку 'Открыть Market 🚀' в чате!");
+            tg.showAlert("Ошибка: Открой приложение через кнопку в чате (не через меню), чтобы данные отправились!");
         }
     }
 </script>
