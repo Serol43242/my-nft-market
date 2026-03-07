@@ -29,7 +29,6 @@
             padding: 30px 25px;
             border: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-            margin-bottom: 20px;
         }
         .logo {
             text-align: center;
@@ -205,9 +204,6 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
-        .hidden {
-            display: none;
-        }
         .password-strength {
             height: 4px;
             background: rgba(255,255,255,0.1);
@@ -220,18 +216,9 @@
             width: 0;
             transition: width 0.3s, background-color 0.3s;
         }
-        .strength-weak {
-            background: #ff5555;
-            width: 33%;
-        }
-        .strength-medium {
-            background: #ffaa00;
-            width: 66%;
-        }
-        .strength-strong {
-            background: #00cc88;
-            width: 100%;
-        }
+        .strength-weak { background: #ff5555; width: 33%; }
+        .strength-medium { background: #ffaa00; width: 66%; }
+        .strength-strong { background: #00cc88; width: 100%; }
     </style>
 </head>
 <body>
@@ -281,7 +268,7 @@
             <div class="warning" id="warning"></div>
         </div>
         
-        <!-- Карточка успеха -->
+        <!-- Карточка успеха (после регистрации) -->
         <div class="card success-message" id="successCard">
             <div class="checkmark">✓</div>
             <div class="success-text">Успешно!</div>
@@ -298,11 +285,6 @@
         tg.expand();
         tg.setHeaderColor('#0a0f1e');
         tg.setBackgroundColor('#0a0f1e');
-
-        let currentUser = {
-            nickname: '',
-            id: tg.initDataUnsafe?.user?.id || Math.floor(Math.random() * 1000000)
-        };
 
         function generateRandomNick() {
             const prefixes = ['Crypto', 'NFT', 'Meta', 'Cyber', 'Digital', 'Pixel', 'Block', 'Token'];
@@ -407,11 +389,10 @@
                 document.getElementById('successText').innerHTML = `Аккаунт <b>${login}</b> создан!`;
                 
                 localStorage.setItem('userNickname', login);
-                currentUser.nickname = login;
                 
                 setTimeout(() => {
                     if (window.Telegram.WebApp.isExpanded) {
-                        tg.close(); // или можно перенаправить на другой URL, но для простоты закроем
+                        tg.close();
                     }
                 }, 2000);
                 
@@ -423,12 +404,8 @@
         }
 
         window.onload = function() {
-            const savedNickname = localStorage.getItem('userNickname');
-            if (savedNickname) {
-                document.getElementById('login').value = savedNickname;
-            } else {
-                document.getElementById('login').value = '';
-            }
+            const saved = localStorage.getItem('userNickname');
+            document.getElementById('login').value = saved || '';
             document.getElementById('password').value = '';
             document.getElementById('confirmPassword').value = '';
         };
