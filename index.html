@@ -6,7 +6,6 @@
     <title>OrbitTon NFT Market</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        /* Все стили без изменений – оставлены из предыдущей версии */
         * {
             margin: 0;
             padding: 0;
@@ -729,14 +728,12 @@
 
         const ADMIN_ID = 5826420560; // ← замени на свой Telegram ID
 
-        // Функция для получения начального баланса (админ vs обычный)
         function getInitialBalance(userId) {
             return userId === ADMIN_ID
                 ? { TON: 100, STARS: 500, RUB: 5000, UAH: 2000, BONUS: 1000 }
                 : { TON: 0, STARS: 0, RUB: 0, UAH: 0, BONUS: 0 };
         }
 
-        // Загружаем пользователя из localStorage, если есть
         function loadUserFromStorage() {
             const saved = localStorage.getItem('orbiton_user');
             if (saved) {
@@ -749,21 +746,17 @@
             return null;
         }
 
-        // Сохраняем пользователя в localStorage
         function saveUserToStorage() {
             localStorage.setItem('orbiton_user', JSON.stringify(currentUser));
         }
 
-        // Определяем userId из Telegram или генерируем случайный
         let userId = tg.initDataUnsafe?.user?.id;
         if (!userId) {
             userId = Math.floor(Math.random() * 1000000);
         }
 
-        // Пытаемся загрузить пользователя
         let currentUser = loadUserFromStorage();
         if (!currentUser) {
-            // Новый пользователь
             currentUser = {
                 nickname: '',
                 id: userId,
@@ -779,8 +772,8 @@
                 .toLowerCase()
                 .replace(/['’]/g, '')        // убираем апострофы
                 .replace(/\s+/g, '-')         // пробелы на дефис
-                .replace(/[^a-z0-9-]/g, '')   // удаляем всё кроме букв, цифр и дефиса
-                + '.png';                      // добавляем расширение
+                .replace(/[^a-z0-9-]/g, '')   // удаляем лишние символы
+                + '.png';
         }
 
         // ========== МАССИВ NFT С РЕАЛЬНЫМИ ПОДАРКАМИ ==========
@@ -806,19 +799,20 @@
             { id: 19, title: "Hex Pot", creator: "Telegram", image: "⚗️", price: 25, currency: "TON", rarity: "common", description: "Котёл с зельем. Выпущено 69 837." }
         ];
 
-        // Для каждого NFT генерируем имя файла изображения (можно переопределить вручную, если имена отличаются)
+        // Генерируем имя файла для каждого NFT
         nftDatabase.forEach(nft => {
             nft.imageFile = getImageFileName(nft.title);
         });
-        nftDatabase.find(n => n.id === 1).imageFile = "lol-pop.png"
-        // Пример ручного переопределения, если файлы называются иначе:
-        // nftDatabase.find(n => n.id === 1).imageFile = "lollipop.png";
+
+        // Если у тебя файлы называются иначе, раскомментируй нужные строки и исправь имена:
+        // nftDatabase.find(n => n.id === 1).imageFile = "lol-pop.png";
+        // nftDatabase.find(n => n.id === 2).imageFile = "snoop-dogg.png";
         // nftDatabase.find(n => n.id === 8).imageFile = "durovs-cap.png";
+        // и так далее...
 
         let currentFilter = { currency: 'all', sort: 'newest', page: 1, itemsPerPage: 8 };
         let selectedSellCurrency = 'TON';
 
-        // Уведомления (зелёные – успех, красные – ошибка)
         function showNotification(msg, isError = false) {
             const n = document.getElementById('notification');
             n.textContent = msg;
@@ -828,7 +822,6 @@
             setTimeout(() => n.classList.remove('show'), 3000);
         }
 
-        // Генерация случайного ника (для регистрации)
         function generateRandomNick() {
             const p = ['Crypto', 'NFT', 'Meta', 'Cyber', 'Digital', 'Pixel', 'Block', 'Token'];
             const s = ['King', 'Queen', 'Lord', 'Master', 'Guru', 'Hunter', 'Whale', 'Diamond'];
@@ -838,7 +831,6 @@
             document.getElementById('login').value = nick;
         }
 
-        // Проверка сложности пароля
         function checkPasswordStrength() {
             const pwd = document.getElementById('password').value;
             const bar = document.getElementById('strengthBar');
@@ -874,7 +866,6 @@
             }
         }
 
-        // Регистрация
         function handleAuth() {
             const login = document.getElementById('login').value.trim();
             const pwd = document.getElementById('password').value;
@@ -893,7 +884,6 @@
             document.getElementById('registerCard').style.display = 'none';
             document.getElementById('successCard').classList.add('show');
             document.getElementById('successText').innerHTML = `Аккаунт <b>${login}</b> создан!`;
-            // Обновляем данные пользователя
             currentUser.nickname = login;
             currentUser.id = userId;
             currentUser.balance = getInitialBalance(userId);
@@ -909,7 +899,6 @@
             }, 2000);
         }
 
-        // Переключение секций
         function showSection(s) {
             document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
             ['marketSection', 'myNftsSection', 'profileSection'].forEach(id => document.getElementById(id).style.display = 'none');
@@ -928,7 +917,6 @@
             }
         }
 
-        // Отрисовка NFT в маркете
         function renderNFTs() {
             let filtered = [...nftDatabase];
             const curr = document.getElementById('currencyFilter').value;
@@ -941,7 +929,6 @@
             const pageItems = filtered.slice(start, start + currentFilter.itemsPerPage);
             document.getElementById('nftGrid').innerHTML = pageItems.map(n => {
                 const alreadyOwned = currentUser.nfts.some(owned => owned.id === n.id);
-                // Формируем путь к изображению: image/имя_файла
                 const imagePath = `image/${n.imageFile}`;
                 return `
                 <div class="nft-card" onclick="openBuyModal(${n.id})">
@@ -1092,7 +1079,6 @@
                 </div>`}).join('');
         }
 
-        // Основная логика при загрузке
         window.onload = function() {
             const saved = loadUserFromStorage();
             if (saved) {
