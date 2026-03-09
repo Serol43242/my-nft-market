@@ -803,6 +803,7 @@
         nftDatabase.forEach(nft => {
             nft.imageFile = getImageFileName(nft.title);
         });
+        nftDatabase.find(n => n.id === 1).imageFile = "lol-pop.png";
 
         // Если у тебя файлы называются иначе, раскомментируй нужные строки и исправь имена:
         // nftDatabase.find(n => n.id === 1).imageFile = "lol-pop.png";
