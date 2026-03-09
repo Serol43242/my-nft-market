@@ -107,6 +107,12 @@
             justify-content: center;
             font-size: 50px;
             position: relative;
+            overflow: hidden;
+        }
+        .nft-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
         .nft-badge {
             position: absolute;
@@ -767,6 +773,16 @@
             };
         }
 
+        // Вспомогательная функция для генерации имени файла из названия NFT
+        function getImageFileName(title) {
+            return title
+                .toLowerCase()
+                .replace(/['’]/g, '')        // убираем апострофы
+                .replace(/\s+/g, '-')         // пробелы на дефис
+                .replace(/[^a-z0-9-]/g, '')   // удаляем всё кроме букв, цифр и дефиса
+                + '.png';                      // добавляем расширение
+        }
+
         // ========== МАССИВ NFT С РЕАЛЬНЫМИ ПОДАРКАМИ ==========
         let nftDatabase = [
             { id: 1, title: "Lol Pop", creator: "Telegram", image: "🍭", price: 10, currency: "TON", rarity: "common", description: "Красочный леденец — один из самых популярных подарков в Telegram. Всего выпущено 468 745 шт." },
@@ -789,6 +805,15 @@
             { id: 18, title: "Evil Eye", creator: "Telegram", image: "🧿", price: 20, currency: "TON", rarity: "common", description: "Сглаз. Тираж 85 204." },
             { id: 19, title: "Hex Pot", creator: "Telegram", image: "⚗️", price: 25, currency: "TON", rarity: "common", description: "Котёл с зельем. Выпущено 69 837." }
         ];
+
+        // Для каждого NFT генерируем имя файла изображения (можно переопределить вручную, если имена отличаются)
+        nftDatabase.forEach(nft => {
+            nft.imageFile = getImageFileName(nft.title);
+        });
+
+        // Пример ручного переопределения, если файлы называются иначе:
+        // nftDatabase.find(n => n.id === 1).imageFile = "lollipop.png";
+        // nftDatabase.find(n => n.id === 8).imageFile = "durovs-cap.png";
 
         let currentFilter = { currency: 'all', sort: 'newest', page: 1, itemsPerPage: 8 };
         let selectedSellCurrency = 'TON';
@@ -915,11 +940,14 @@
             const start = (currentFilter.page - 1) * currentFilter.itemsPerPage;
             const pageItems = filtered.slice(start, start + currentFilter.itemsPerPage);
             document.getElementById('nftGrid').innerHTML = pageItems.map(n => {
-                // Проверим, не куплен ли уже этот NFT (чтобы скрыть кнопку купить или показать "Куплено")
                 const alreadyOwned = currentUser.nfts.some(owned => owned.id === n.id);
+                // Формируем путь к изображению: image/имя_файла
+                const imagePath = `image/${n.imageFile}`;
                 return `
                 <div class="nft-card" onclick="openBuyModal(${n.id})">
-                    <div class="nft-image">${n.image}<span class="nft-badge">${n.rarity}</span></div>
+                    <div class="nft-image">
+                        <img src="${imagePath}" alt="${n.title}" onerror="this.style.display='none'; this.parentElement.innerHTML='${n.image}';">
+                    </div>
                     <div class="nft-title">${n.title}</div>
                     <div class="nft-creator"><span>👤</span> ${n.creator}</div>
                     <div class="nft-price"><span class="price-tag">${n.price}</span><span class="currency-badge">${n.currency}</span></div>
@@ -937,26 +965,29 @@
         function openBuyModal(id) {
             const n = nftDatabase.find(x => x.id === id);
             if (!n) return;
-            // Проверим, не куплен ли уже
             if (currentUser.nfts.some(owned => owned.id === id)) {
                 showNotification('У тебя уже есть этот NFT', true);
                 return;
             }
+            const imagePath = `image/${n.imageFile}`;
             document.getElementById('buyModalContent').innerHTML = `
-                <div style="text-align:center;"><div style="font-size:80px;">${n.image}</div><h3>${n.title}</h3>
-                <p style="color:#8899bb;">${n.description || ''}</p>
-                <p style="font-size:24px;color:#00aaff;">${n.price} ${n.currency}</p>
-                <p style="color:#aabbdd;">Твой баланс: ${currentUser.balance[n.currency] || 0} ${n.currency}</p>
-                <button class="btn-primary" onclick="buyNFT(${n.id})">Купить</button></div>`;
+                <div style="text-align:center;">
+                    <div style="font-size:80px; margin-bottom:10px;">
+                        <img src="${imagePath}" alt="${n.title}" style="max-width:100%; max-height:200px; border-radius:16px;" onerror="this.style.display='none'; this.parentElement.innerHTML='${n.image}';">
+                    </div>
+                    <h3>${n.title}</h3>
+                    <p style="color:#8899bb;">${n.description || ''}</p>
+                    <p style="font-size:24px;color:#00aaff;">${n.price} ${n.currency}</p>
+                    <p style="color:#aabbdd;">Твой баланс: ${currentUser.balance[n.currency] || 0} ${n.currency}</p>
+                    <button class="btn-primary" onclick="buyNFT(${n.id})">Купить</button>
+                </div>`;
             document.getElementById('buyModal').classList.add('show');
         }
 
-        // Основная функция покупки – теперь с проверкой баланса и списанием
         function buyNFT(id) {
             const n = nftDatabase.find(x => x.id === id);
             if (!n) return;
             
-            // Проверка, не куплен ли уже
             if (currentUser.nfts.some(owned => owned.id === id)) {
                 showNotification('У тебя уже есть этот NFT', true);
                 closeModal('buyModal');
@@ -978,14 +1009,12 @@
                 return;
             }
 
-            // Списываем средства
             currentUser.balance[currency] -= price;
-
-            // Добавляем NFT в коллекцию пользователя (копируем нужные поля)
             const ownedNft = {
                 id: n.id,
                 title: n.title,
                 image: n.image,
+                imageFile: n.imageFile,
                 rarity: n.rarity,
                 currency: n.currency,
                 price: n.price,
@@ -993,18 +1022,13 @@
                 description: n.description
             };
             currentUser.nfts.push(ownedNft);
-
-            // Добавляем запись в историю транзакций (опционально)
             currentUser.transactions.push(`Куплен ${n.title} за ${price} ${currency}`);
-
-            // Сохраняем изменения
             saveUserToStorage();
 
-            // Обновляем интерфейс
             updateBalances();
             updateProfile();
             updateMyNFTs();
-            renderNFTs(); // перерисовать маркет, чтобы кнопка сменилась на "Куплено"
+            renderNFTs();
 
             showNotification(`✅ Поздравляем! Ты купил ${n.title} за ${price} ${currency}`);
             closeModal('buyModal');
@@ -1055,18 +1079,21 @@
                 grid.innerHTML = '<p style="color:#8899bb; text-align:center;">У тебя пока нет NFT</p>';
                 return;
             }
-            grid.innerHTML = currentUser.nfts.map(n => `
+            grid.innerHTML = currentUser.nfts.map(n => {
+                const imagePath = `image/${n.imageFile}`;
+                return `
                 <div class="nft-card">
-                    <div class="nft-image">${n.image}<span class="nft-badge">${n.rarity}</span></div>
+                    <div class="nft-image">
+                        <img src="${imagePath}" alt="${n.title}" onerror="this.style.display='none'; this.parentElement.innerHTML='${n.image}';">
+                    </div>
                     <div class="nft-title">${n.title}</div>
                     <div class="nft-creator"><span>👤</span> ${n.creator}</div>
                     <div style="color:#8899bb; font-size:12px;">Куплено за ${n.price} ${n.currency}</div>
-                </div>`).join('');
+                </div>`}).join('');
         }
 
         // Основная логика при загрузке
         window.onload = function() {
-            // Если есть сохранённый пользователь — сразу показываем маркет
             const saved = loadUserFromStorage();
             if (saved) {
                 currentUser = saved;
@@ -1076,7 +1103,6 @@
                 showSection('market');
                 renderNFTs(); updateBalances(); updateProfile(); updateMyNFTs();
             } else {
-                // Новый пользователь — показываем регистрацию
                 document.getElementById('login').value = '';
                 document.getElementById('password').value = '';
                 document.getElementById('confirmPassword').value = '';
