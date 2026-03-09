@@ -6,7 +6,7 @@
     <title>OrbitTon NFT Market</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        /* Все стили без изменений (можно оставить как есть) */
+        /* Все стили без изменений – оставлены из предыдущей версии */
         * {
             margin: 0;
             padding: 0;
@@ -359,6 +359,9 @@
         .notification.show {
             transform: translateX(0);
         }
+        .notification.error {
+            border-left-color: #ff5555;
+        }
         .pagination {
             display: flex;
             justify-content: center;
@@ -645,7 +648,7 @@
                     </div>
                 </div>
             </div>
-            <h3>💰 Мой балансы</h3>
+            <h3>💰 Мои балансы</h3>
             <div class="balances" id="balancesContainer"></div>
             <h3 style="margin-top: 30px;">📜 История</h3>
             <div style="background: rgba(30,35,50,0.9); border-radius:24px; padding:20px;" id="transactionHistory">Загрузка...</div>
@@ -718,12 +721,12 @@
         const tg = window.Telegram.WebApp;
         tg.ready(); tg.expand(); tg.setHeaderColor('#0a0f1e'); tg.setBackgroundColor('#0a0f1e');
 
-        const ADMIN_ID = 8528849875; // ← замени на свой Telegram ID
+        const ADMIN_ID = 5826420560; // ← замени на свой Telegram ID
 
         // Функция для получения начального баланса (админ vs обычный)
         function getInitialBalance(userId) {
             return userId === ADMIN_ID
-                ? { TON: 50, STARS: 500, RUB: 5000, UAH: 2000, BONUS: 1000 }
+                ? { TON: 100, STARS: 500, RUB: 5000, UAH: 2000, BONUS: 1000 }
                 : { TON: 0, STARS: 0, RUB: 0, UAH: 0, BONUS: 0 };
         }
 
@@ -732,10 +735,7 @@
             const saved = localStorage.getItem('orbiton_user');
             if (saved) {
                 try {
-                    const parsed = JSON.parse(saved);
-                    // Обновляем баланс на случай, если изменился ADMIN_ID (но лучше не менять)
-                    // или если хотим пересчитать баланс по правилам — оставляем сохранённый
-                    return parsed;
+                    return JSON.parse(saved);
                 } catch (e) {
                     console.warn('Ошибка парсинга сохранённого пользователя');
                 }
@@ -765,9 +765,6 @@
                 balance: getInitialBalance(userId),
                 transactions: []
             };
-        } else {
-            // Если загрузили из storage, но userId из Telegram отличается (например, тестирование),
-            // можно оставить как есть, либо обновить id. Оставим сохранённый.
         }
 
         // ========== МАССИВ NFT С РЕАЛЬНЫМИ ПОДАРКАМИ ==========
@@ -796,10 +793,13 @@
         let currentFilter = { currency: 'all', sort: 'newest', page: 1, itemsPerPage: 8 };
         let selectedSellCurrency = 'TON';
 
-        // Уведомления
-        function showWarning(msg) {
+        // Уведомления (зелёные – успех, красные – ошибка)
+        function showNotification(msg, isError = false) {
             const n = document.getElementById('notification');
-            n.textContent = msg; n.classList.add('show');
+            n.textContent = msg;
+            n.classList.remove('error');
+            if (isError) n.classList.add('error');
+            n.classList.add('show');
             setTimeout(() => n.classList.remove('show'), 3000);
         }
 
@@ -855,12 +855,12 @@
             const pwd = document.getElementById('password').value;
             const conf = document.getElementById('confirmPassword').value;
             const btn = document.getElementById('registerBtn');
-            if (login.length < 3) return showWarning('Никнейм минимум 3 символа');
-            if (pwd.length < 6) return showWarning('Пароль минимум 6 символов');
-            if (pwd !== conf) return showWarning('Пароли не совпадают');
+            if (login.length < 3) return showNotification('Никнейм минимум 3 символа', true);
+            if (pwd.length < 6) return showNotification('Пароль минимум 6 символов', true);
+            if (pwd !== conf) return showNotification('Пароли не совпадают', true);
             btn.disabled = true; btn.innerHTML = '<span class="loading"></span> Создаем аккаунт...';
             if (!tg.sendData) {
-                showWarning('Открой через кнопку в чате!');
+                showNotification('Открой через кнопку в чате!', true);
                 btn.disabled = false; btn.innerHTML = '📝 Зарегистрироваться';
                 return;
             }
@@ -870,7 +870,7 @@
             document.getElementById('successText').innerHTML = `Аккаунт <b>${login}</b> создан!`;
             // Обновляем данные пользователя
             currentUser.nickname = login;
-            currentUser.id = userId; // на всякий случай
+            currentUser.id = userId;
             currentUser.balance = getInitialBalance(userId);
             saveUserToStorage();
             setTimeout(() => {
@@ -903,7 +903,7 @@
             }
         }
 
-        // Отрисовка NFT
+        // Отрисовка NFT в маркете
         function renderNFTs() {
             let filtered = [...nftDatabase];
             const curr = document.getElementById('currencyFilter').value;
@@ -914,14 +914,17 @@
             else filtered.sort((a, b) => b.id - a.id);
             const start = (currentFilter.page - 1) * currentFilter.itemsPerPage;
             const pageItems = filtered.slice(start, start + currentFilter.itemsPerPage);
-            document.getElementById('nftGrid').innerHTML = pageItems.map(n => `
+            document.getElementById('nftGrid').innerHTML = pageItems.map(n => {
+                // Проверим, не куплен ли уже этот NFT (чтобы скрыть кнопку купить или показать "Куплено")
+                const alreadyOwned = currentUser.nfts.some(owned => owned.id === n.id);
+                return `
                 <div class="nft-card" onclick="openBuyModal(${n.id})">
                     <div class="nft-image">${n.image}<span class="nft-badge">${n.rarity}</span></div>
                     <div class="nft-title">${n.title}</div>
                     <div class="nft-creator"><span>👤</span> ${n.creator}</div>
                     <div class="nft-price"><span class="price-tag">${n.price}</span><span class="currency-badge">${n.currency}</span></div>
-                    <button class="btn-buy" onclick="event.stopPropagation(); buyNFT(${n.id})">Купить</button>
-                </div>`).join('');
+                    ${alreadyOwned ? '<button class="btn-buy" disabled style="opacity:0.5;">Куплено</button>' : '<button class="btn-buy" onclick="event.stopPropagation(); buyNFT('+n.id+')">Купить</button>'}
+                </div>`}).join('');
             let pages = '';
             for (let i = 1; i <= Math.ceil(filtered.length / currentFilter.itemsPerPage); i++)
                 pages += `<button class="page-btn ${i === currentFilter.page ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
@@ -934,16 +937,76 @@
         function openBuyModal(id) {
             const n = nftDatabase.find(x => x.id === id);
             if (!n) return;
+            // Проверим, не куплен ли уже
+            if (currentUser.nfts.some(owned => owned.id === id)) {
+                showNotification('У тебя уже есть этот NFT', true);
+                return;
+            }
             document.getElementById('buyModalContent').innerHTML = `
                 <div style="text-align:center;"><div style="font-size:80px;">${n.image}</div><h3>${n.title}</h3>
-                <p style="color:#8899bb;">${n.description || ''}</p><p style="font-size:24px;color:#00aaff;">${n.price} ${n.currency}</p>
+                <p style="color:#8899bb;">${n.description || ''}</p>
+                <p style="font-size:24px;color:#00aaff;">${n.price} ${n.currency}</p>
+                <p style="color:#aabbdd;">Твой баланс: ${currentUser.balance[n.currency] || 0} ${n.currency}</p>
                 <button class="btn-primary" onclick="buyNFT(${n.id})">Купить</button></div>`;
             document.getElementById('buyModal').classList.add('show');
         }
 
+        // Основная функция покупки – теперь с проверкой баланса и списанием
         function buyNFT(id) {
             const n = nftDatabase.find(x => x.id === id);
-            if (n) showWarning(`✅ Куплено: ${n.title} за ${n.price} ${n.currency}`);
+            if (!n) return;
+            
+            // Проверка, не куплен ли уже
+            if (currentUser.nfts.some(owned => owned.id === id)) {
+                showNotification('У тебя уже есть этот NFT', true);
+                closeModal('buyModal');
+                return;
+            }
+
+            const currency = n.currency;
+            const price = n.price;
+            const balance = currentUser.balance[currency];
+
+            if (balance === undefined) {
+                showNotification('Неизвестная валюта', true);
+                return;
+            }
+
+            if (balance < price) {
+                showNotification(`Недостаточно средств: нужно ${price} ${currency}, у тебя ${balance} ${currency}`, true);
+                closeModal('buyModal');
+                return;
+            }
+
+            // Списываем средства
+            currentUser.balance[currency] -= price;
+
+            // Добавляем NFT в коллекцию пользователя (копируем нужные поля)
+            const ownedNft = {
+                id: n.id,
+                title: n.title,
+                image: n.image,
+                rarity: n.rarity,
+                currency: n.currency,
+                price: n.price,
+                creator: n.creator,
+                description: n.description
+            };
+            currentUser.nfts.push(ownedNft);
+
+            // Добавляем запись в историю транзакций (опционально)
+            currentUser.transactions.push(`Куплен ${n.title} за ${price} ${currency}`);
+
+            // Сохраняем изменения
+            saveUserToStorage();
+
+            // Обновляем интерфейс
+            updateBalances();
+            updateProfile();
+            updateMyNFTs();
+            renderNFTs(); // перерисовать маркет, чтобы кнопка сменилась на "Куплено"
+
+            showNotification(`✅ Поздравляем! Ты купил ${n.title} за ${price} ${currency}`);
             closeModal('buyModal');
         }
 
@@ -957,15 +1020,15 @@
             const name = document.getElementById('sellNftName').value.trim();
             const desc = document.getElementById('sellNftDescription').value.trim();
             const price = document.getElementById('sellNftPrice').value;
-            if (!name || !desc || !price) return showWarning('Заполни все поля');
-            showWarning('✅ Заявка создана! Передай NFT @OrbitTonAdmin');
+            if (!name || !desc || !price) return showNotification('Заполни все поля', true);
+            showNotification('✅ Заявка создана! Передай NFT @OrbitTonAdmin');
             closeModal('sellModal');
             document.getElementById('sellNftName').value = '';
             document.getElementById('sellNftDescription').value = '';
             document.getElementById('sellNftPrice').value = '';
         }
         function closeModal(id) { document.getElementById(id).classList.remove('show'); }
-        function copyAdminUsername() { navigator.clipboard?.writeText('@OrbitTonAdmin'); showWarning('Скопировано'); }
+        function copyAdminUsername() { navigator.clipboard?.writeText('@OrbitTonAdmin'); showNotification('Скопировано'); }
 
         function updateBalances() {
             const b = currentUser.balance;
@@ -981,20 +1044,32 @@
             document.getElementById('profileSalesCount').textContent = '0';
             document.getElementById('profilePurchasesCount').textContent = '0';
             updateBalances();
-            document.getElementById('transactionHistory').innerHTML = currentUser.transactions.length ? currentUser.transactions.map(t => `<div>${t}</div>`).join('') : '<p style="color:#8899bb;">История пуста</p>';
+            document.getElementById('transactionHistory').innerHTML = currentUser.transactions.length 
+                ? currentUser.transactions.map(t => `<div style="padding:8px; border-bottom:1px solid #334455;">${t}</div>`).join('') 
+                : '<p style="color:#8899bb;">История пуста</p>';
         }
 
         function updateMyNFTs() {
             const grid = document.getElementById('myNftsGrid');
-            grid.innerHTML = currentUser.nfts.length ? currentUser.nfts.map(n => '<p>NFT</p>').join('') : '<p style="color:#8899bb; text-align:center;">У тебя пока нет NFT</p>';
+            if (currentUser.nfts.length === 0) {
+                grid.innerHTML = '<p style="color:#8899bb; text-align:center;">У тебя пока нет NFT</p>';
+                return;
+            }
+            grid.innerHTML = currentUser.nfts.map(n => `
+                <div class="nft-card">
+                    <div class="nft-image">${n.image}<span class="nft-badge">${n.rarity}</span></div>
+                    <div class="nft-title">${n.title}</div>
+                    <div class="nft-creator"><span>👤</span> ${n.creator}</div>
+                    <div style="color:#8899bb; font-size:12px;">Куплено за ${n.price} ${n.currency}</div>
+                </div>`).join('');
         }
 
         // Основная логика при загрузке
         window.onload = function() {
             // Если есть сохранённый пользователь — сразу показываем маркет
-            if (loadUserFromStorage()) {
-                // currentUser уже загружен выше, но на всякий случай перезагрузим
-                currentUser = loadUserFromStorage();
+            const saved = loadUserFromStorage();
+            if (saved) {
+                currentUser = saved;
                 document.getElementById('registerContainer').style.display = 'none';
                 document.querySelector('.navbar').style.display = 'flex';
                 document.querySelector('.container').style.display = 'block';
